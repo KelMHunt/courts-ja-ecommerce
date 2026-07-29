@@ -1,0 +1,24 @@
+{
+  "name": "courts-ja-ecommerce",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/KelMHunt/courts-ja-ecommerce#readme",
+  "bugs": {
+    "url": "https://github.com/KelMHunt/courts-ja-ecommerce/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KelMHunt/courts-ja-ecommerce.git"
+  },
+  "license": "ISC",
+  "author": "Kelcy M Hunter",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1" 
+  },
+  "dependencies": {
+    "playwright": "^1.62.0",
+    "typescript": "^7.0.2"
+  }
+}
