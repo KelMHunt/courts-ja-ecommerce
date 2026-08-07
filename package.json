@@ -14,11 +14,13 @@
   "author": "Kelcy M Hunter",
   "type": "commonjs",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1" 
-  },
+  "scripts": {},
   "dependencies": {
     "playwright": "^1.62.0",
     "typescript": "^7.0.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.1.2"
   }
 }
