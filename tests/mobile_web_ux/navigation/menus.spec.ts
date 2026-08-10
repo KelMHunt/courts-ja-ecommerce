@@ -1,6 +1,6 @@
 import {test, expect, type Page} from '@playwright/test'
-import { MainMenu } from '../../../pages/components/mainMenu'
 import {BasePage} from '../../../pages/basePage'
+import { locations } from '../../../test_data/footerData'
 
 
 let page: Page
@@ -33,6 +33,13 @@ test.describe('Footer tests', {tag: "@regression"}, ()=> {
     test('Verify clicking location button opens dropdown modal of expected countries CFS-298', async()=> {
         const result = await base.footer.confirmCountriesList()
         result.forEach(val => expect(val).toBeTruthy())
+    })
+
+    test('Verify correct url when different location is selected CFS-300', async() => {
+        const choice = locations[2]!
+        const result = await base.footer.selectCountry(choice)
+        expect(result).toBeTruthy()
+        expect(page.url()).toContain(choice.toLowerCase())
     })
 })
 

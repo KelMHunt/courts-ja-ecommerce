@@ -38,9 +38,6 @@ export class Footer
         for(let i=0; i<options.length; i++){
             const country = await options[i]?.innerText()
             const img = options[i]?.locator("span[style*='background-image']")
-            
-            //debug
-            // console.log(country, data.locations[i],img)
 
             if(country?.trim()===data.locations[i] && img?.isVisible()){
                 pattern.push(true)
@@ -48,7 +45,7 @@ export class Footer
                 pattern.push(false)
             }
         }
-        console.log(pattern)
+        // console.log(pattern)
         
         return pattern
     }
