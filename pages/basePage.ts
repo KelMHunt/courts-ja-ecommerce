@@ -16,9 +16,11 @@ export class BasePage
     private readonly userBtn: Locator
     private readonly cartBtn: Locator
     private readonly searchInput: Locator
+    private readonly popUpClose: Locator
 
     //footer
     readonly footerMenu: FooterMenu
+    readonly footer: Footer
 
     //constructor
     constructor(page: Page){
@@ -26,7 +28,12 @@ export class BasePage
         this.mainMenu = new MainMenu(this.page)
         this.deptMenu = new DepartmentsMenu(this.page)
         this.footerMenu = new FooterMenu(this.page)
+        this.footer = new Footer(this.page)
+        this.popUpClose = this.page.locator(".onetrust-close-btn-handler")
     }
 
     //methods
+    async closePreferences(): Promise<void>{
+        await this.popUpClose.click()
+    }
 }
