@@ -4,16 +4,30 @@ import {BasePage} from '../../../pages/basePage'
 
 
 let page: Page
-let mainMenu: MainMenu
+let base: BasePage
 
 test.beforeAll(async({browser})=>{
     page = await browser.newPage()
-    mainMenu = new MainMenu(page)
+    base = new BasePage(page)
     await page.goto("")
 })
 
-test.fail('Verify clicking each main menu option routes user to correct page', async() => {
-    await mainMenu.openMainMenu()
-    const result = await mainMenu.confirmMainMenuOptions()
+test.describe('Header tests', {tag: "@regression"}, ()=> {
+
+    test.fail('Verify clicking each main menu option routes user to correct page', async() => {
+    await base.mainMenu.openMainMenu()
+    const result = await base.mainMenu.confirmMainMenuOptions()
     result.forEach(val => expect(val).toBeTruthy())
 })
+
+})
+
+test.describe('Footer tests', {tag: "@regression"}, ()=> {
+
+    test('Verify clicking a footer link category displays dropdown of footer links', async()=> {
+        const result = await base.footerMenu.confirmFooterMenuOptions()
+        result.forEach(val => expect(val).toBeTruthy())
+    })
+})
+
+
