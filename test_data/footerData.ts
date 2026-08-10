@@ -7,3 +7,8 @@ export const locations = [
     "Trinidad & Tobago"
 ]
 
+export const newsletter = {
+    heading: "Stay in Touch!",
+    description: "Want to keep receiving our exclusive offers, promotions, and updates?"
+}
+

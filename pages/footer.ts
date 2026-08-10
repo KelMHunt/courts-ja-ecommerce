@@ -6,18 +6,22 @@ export class Footer
 {
     //variables
     private readonly page: Page
-    private readonly newsletterContent: Locator
-    private readonly newsletterSignUpInput: Locator
-    private readonly newsletterSignUpBtn: Locator
-    private readonly socialLinks: Locator
-    private readonly paymentMethods: Locator
-    private readonly locationDropdown: Locator
-    private readonly currencyDropdown: Locator
+    readonly newsletterContent: Locator
+    readonly newsletterHeading: Locator
+    readonly newsletterMessage: Locator
+    readonly newsletterSignUpInput: Locator
+    readonly newsletterSignUpBtn: Locator
+    readonly socialLinks: Locator
+    readonly paymentMethods: Locator
+    readonly locationDropdown: Locator
+    readonly currencyDropdown: Locator
 
 
     constructor(page: Page){
         this.page = page
         this.newsletterContent = this.page.locator(".footer__newsletter__content")
+        this.newsletterHeading = this.page.locator(".newsletter-title")
+        this.newsletterMessage = this.page.locator(".newsletter-message")
         this.newsletterSignUpInput = this.page.locator(".field.newsletter")
         this.newsletterSignUpBtn = this.page.locator("button.subscribe")
         this.socialLinks = this.page.locator(".footer__middle .social-links li")
@@ -68,6 +72,5 @@ export class Footer
         }
         return isFound
     }
-
 
 }
