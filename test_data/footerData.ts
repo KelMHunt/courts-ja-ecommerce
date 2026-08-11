@@ -1,4 +1,5 @@
-export const locations = [
+export const locations = 
+[
     "Antigua", "Barbados", 
     "Belize", "Curacao (OMNI)", 
     "Dominica", "Grenada", 
@@ -7,7 +8,15 @@ export const locations = [
     "Trinidad & Tobago"
 ]
 
-export const newsletter = {
+export const currencies = 
+[
+    "JMD", "XCD", "BBD",
+    "ANG", "GYD", "TTD",
+    "CAD", "USD"
+]
+
+export const newsletter = 
+{
     heading: "Stay in Touch!",
     description: "Want to keep receiving our exclusive offers, promotions, and updates?"
 }

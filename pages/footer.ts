@@ -13,8 +13,8 @@ export class Footer
     readonly newsletterSignUpBtn: Locator
     readonly socialLinks: Locator
     readonly paymentMethods: Locator
-    readonly locationDropdown: Locator
-    readonly currencyDropdown: Locator
+    readonly locationBtn: Locator
+    readonly currencyBtn: Locator
 
 
     constructor(page: Page){
@@ -26,17 +26,17 @@ export class Footer
         this.newsletterSignUpBtn = this.page.locator("button.subscribe")
         this.socialLinks = this.page.locator(".footer__middle .social-links li")
         this.paymentMethods = this.page.locator("img[alt*=/Payment Methods/]")
-        this.locationDropdown = this.page.locator("#switcher-store")
-        this.currencyDropdown = this.page.locator("#switcher-currency")
+        this.locationBtn = this.page.locator("#switcher-store")
+        this.currencyBtn = this.page.locator("#switcher-currency")
 
     }
 
     //methods
 
     async confirmCountriesList(): Promise<boolean[]>{
-        await this.locationDropdown.click()
+        await this.locationBtn.click()
 
-        const options = await this.locationDropdown.locator("li").all()
+        const options = await this.locationBtn.locator("li").all()
         let pattern: boolean[] = []
         
         for(let i=0; i<options.length; i++){
@@ -55,9 +55,9 @@ export class Footer
     }
 
     async selectCountry(name:string): Promise<boolean>{
-        await this.locationDropdown.click()
+        await this.locationBtn.click()
         let isFound: boolean = false
-        const options = await this.locationDropdown.locator("li").all()
+        const options = await this.locationBtn.locator("li").all()
         
         for(const option of options){
             const country = (await option.innerText()).trim()
@@ -73,4 +73,49 @@ export class Footer
         return isFound
     }
 
+    async confirmCurrenciesList(): Promise<boolean[]>{
+        const options = await this.currencyBtn.locator("li").all()
+        let pattern: boolean[] = []
+
+        for(let i=0; i<options.length; i++){
+            const currency = await options[i]?.innerText()
+            
+
+            if(currency?.trim()===data.currencies[i]){
+                pattern.push(true)
+            } else {
+                pattern.push(false)
+            }
+        }
+        if(options.length<1){
+            console.log("There are no options available")
+            pattern.push(false)
+        }
+        // debug
+        console.log(options,pattern)
+        
+        return pattern
+
+    }
+
+    async selectCurrency(name: string): Promise<boolean>{
+        await this.currencyBtn.click()
+        let isFound:boolean = false
+        const options = await this.currencyBtn.locator("li").all()
+
+        for(const option of options){
+            const currency = (await option.innerText()).trim()
+            if(currency===name){
+                await option.click()
+                isFound = true
+                break
+            }
+        }
+        if(options.length<1){
+            console.log("There are no options available")
+        } else if(!isFound){
+            console.log("Currency does not exist in the list")
+        }
+        return isFound
+    }
 }
