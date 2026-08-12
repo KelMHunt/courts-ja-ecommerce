@@ -119,30 +119,6 @@ export class Footer
         }
         return isFound
     }
-
-    // private async getSocialPages(context: BrowserContext): Promise<Page[]>{
-    //     const allSocials = await this.socialLinks.all()
-    //     let pages: Page[] = []
-
-    //     for(const btn of allSocials){
-    //         //1. handle browser dialog
-            
-    //         //2. click btn to open new page
-    //         this.page.on('dialog', dialog => {
-    //             console.log(dialog.message())
-    //             dialog.dismiss()
-    //         })
-    //         const [newPage] = await Promise.all([context.waitForEvent('page'), btn.click()])
-            
-    //         //3. push new page to pages array
-    //         pages.push(newPage)
-    //         //4. close new page to return to parent page
-    //         await newPage.close()
-    //     }
-    //     // pages = context.pages()
-    //     console.log(pages.length)
-    //     return pages
-    // } 
     
 
     private async getSocialLinks(): Promise<string[]>{
@@ -177,8 +153,8 @@ export class Footer
         return icons
    }
 
-    async confirmSocials(context:BrowserContext): Promise<boolean[]>{
-        // const pages = await this.getSocialPages(context)
+    async confirmSocials(): Promise<boolean[]>{
+        
         const links = await this.getSocialLinks()
         const icons = await this.getSocialIcons()
         let pattern: boolean[] = []
@@ -204,6 +180,43 @@ export class Footer
         return pattern
    }
 
+   /* Social functions not in use yet */
+   // context logic not working
+   async getSocialUrl(context:BrowserContext, index:number): Promise<string>{
+    const socialBtn = this.socialLinks.nth(index)
+    
+    const pagePromise = context.waitForEvent('page')
+    
+    await socialBtn.click()
+    
+    const newPage = await pagePromise
+    
+    await newPage.waitForLoadState()
+    await newPage.bringToFront()
+
+    const url = newPage.url()
+    return url
+   }
+
+   async getSocialName(index:number): Promise<string | null>{
+        const name = await this.socialLinks.nth(index).locator("i").getAttribute("class")
+
+        return name
+   }
+
+   async verifySocial(url: string, name: string| null): Promise<boolean>{
+       if (name?.includes("facebook") && url.includes(data.socials.facebook)) {
+           return true
+       } else if (name?.includes("instagram") && url.includes(data.socials.instagram)) {
+           return true
+       } else if (name?.includes("tiktok") && url.includes(data.socials.tiktok)) {
+           return true
+       } else if (name?.includes("whatsapp") && url.includes(data.socials.whatsapp)) {
+           return true
+       } else {
+           return false
+       }
+   }
 
 
 

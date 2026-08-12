@@ -46,11 +46,29 @@ test.describe('Footer Tests', {tag: "@regression"}, ()=> {
         //assert that home page displays price in chosen currency
     })
 
-    test('Verify clicking each socials icon routes user to correct page', async({browser}) => {
-        const context = await browser.newContext()
-        const result = await base.footer.confirmSocials(context)
+    test('Verify clicking each footer social link opens the correct company social media page CFS-301', async() => {
+        
+        const result = await base.footer.confirmSocials()
         result.forEach(val => expect(val).toBeTruthy())
-        //test to be updated to use context variable
+    })
+
+    //Preferred implementation to test social function --needs work
+    test.fixme('Verify clicking each footer social link opens the correct company social media page CFS-301', async({browser})=> {
+        const context = await browser.newContext()
+        const buttons = await base.footer.socialLinks.all()
+        let results: boolean[] = []
+
+        for(let i=0; i< buttons.length; i++){
+            const url = await base.footer.getSocialUrl(context, i)
+            const name = await base.footer.getSocialName(i)
+            const check = await base.footer.verifySocial(url, name)
+            results.push(check)
+        }
+
+        //close context along with its pages
+        await context.close()
+        
+        results.forEach(val => expect(val).toBeTruthy())
     })
 })
 
