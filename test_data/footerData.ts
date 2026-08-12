@@ -21,3 +21,10 @@ export const newsletter =
     description: "Want to keep receiving our exclusive offers, promotions, and updates?"
 }
 
+export const socials =
+{
+    facebook: "facebook.com/courtsjamaica",
+    instagram: "instagram.com/courts_jamaica",
+    tiktok: "tiktok.com/@courtsinthecaribbean",
+    whatsapp: "whatsapp.com"
+}

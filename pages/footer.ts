@@ -1,6 +1,7 @@
-import {type Page, type Locator} from '@playwright/test'
+import {type Page, type Locator, type BrowserContext} from '@playwright/test'
 import * as data from '../test_data/footerData'
 import * as helper from '../test_data/helpers/functions'
+
 
 export class Footer
 {
@@ -118,4 +119,92 @@ export class Footer
         }
         return isFound
     }
+
+    // private async getSocialPages(context: BrowserContext): Promise<Page[]>{
+    //     const allSocials = await this.socialLinks.all()
+    //     let pages: Page[] = []
+
+    //     for(const btn of allSocials){
+    //         //1. handle browser dialog
+            
+    //         //2. click btn to open new page
+    //         this.page.on('dialog', dialog => {
+    //             console.log(dialog.message())
+    //             dialog.dismiss()
+    //         })
+    //         const [newPage] = await Promise.all([context.waitForEvent('page'), btn.click()])
+            
+    //         //3. push new page to pages array
+    //         pages.push(newPage)
+    //         //4. close new page to return to parent page
+    //         await newPage.close()
+    //     }
+    //     // pages = context.pages()
+    //     console.log(pages.length)
+    //     return pages
+    // } 
+    
+
+    private async getSocialLinks(): Promise<string[]>{
+        const allSocials = await this.socialLinks.all()
+        let links: string[] = []
+
+        for(const btn of allSocials){
+            const link = await btn.locator("a").getAttribute("href")
+            if(link){
+                links.push(link)
+            } else {
+                console.log("Attribute does not exist")
+            }
+        }
+        return links
+    }
+
+
+   private async getSocialIcons(): Promise<string[]>{
+        const allSocials = await this.socialLinks.all()
+        let icons: string[] = []
+        
+        for(const btn of allSocials){
+            const icon = await btn.locator("i").getAttribute("class")
+            if(icon){
+                icons.push(icon)
+            } else {
+                console.log("Attribute does not exist")
+            }
+
+        }
+        return icons
+   }
+
+    async confirmSocials(context:BrowserContext): Promise<boolean[]>{
+        // const pages = await this.getSocialPages(context)
+        const links = await this.getSocialLinks()
+        const icons = await this.getSocialIcons()
+        let pattern: boolean[] = []
+
+        for(let i=0; i<icons.length; i++){
+            // const pg = pages[i]
+            const link = links[i]
+            const icon = icons[i]
+
+            if(icon?.includes("facebook") && link?.includes(data.socials.facebook)){
+                pattern.push(true)
+            } else if (icon?.includes("instagram") && link?.includes(data.socials.instagram)){
+                pattern.push(true)
+            } else if(icon?.includes("tiktok") && link?.includes(data.socials.tiktok)){
+                pattern.push(true)
+            } else if (icon?.includes("whatsapp") && link?.includes(data.socials.whatsapp)){
+                pattern.push(true)
+            } else {
+                pattern.push (false)
+            }
+        }
+        console.log(pattern)
+        return pattern
+   }
+
+
+
+
 }
