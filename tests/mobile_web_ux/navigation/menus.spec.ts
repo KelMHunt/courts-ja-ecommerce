@@ -19,8 +19,22 @@ test.describe('Header Menu tests', {tag: "@regression"}, ()=> {
     await base.mainMenu.openMainMenu()
     const result = await base.mainMenu.confirmMainMenuOptions()
     result.forEach(val => expect(val).toBeTruthy())
+    }) //expected to fail due to test data
+
+    test('Verify departments menu displays expected departments CFS-218', async()=> {
+
+        await base.mainMenu.openMainMenu()
+        const deptMenu = await base.mainMenu.openDeptsMenu()
+        const result = await deptMenu.confirmDepts()
+        result.forEach(val => expect(val).toBeTruthy())
     })
 
+    test.fail('Verify clicking each departments menu item displays dropdown of product categories list CFS-216', async()=> {
+        await base.mainMenu.openMainMenu()
+        const deptMenu = await base.mainMenu.openDeptsMenu()
+        const result = await deptMenu.confirmDeptsCategories()
+        result.forEach(val => expect(val).toBeTruthy())
+    }) // expected to fail due to lack of unique element selectors in dom
     
 
 })
