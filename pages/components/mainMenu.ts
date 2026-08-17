@@ -31,7 +31,7 @@ export class MainMenu
         this.page = page
         this.menuIcon = this.page.locator(".side-menu__mobile")
         this.logoClose = this.page.locator(".close").first()
-        this.menuTray = this.page.locator(".navigation").first()
+        this.menuTray = this.page.locator(".navigation").last()
         this.deptsLink = this.page.getByRole("link", {name: /Departments/})
         this.orderHistoryLink = this.page.locator("a#header_order_01").first()
         this.accountLink = this.page.getByText(/Account/)
@@ -53,13 +53,13 @@ export class MainMenu
 
     async openMainMenu():Promise<boolean>{
         await this.menuIcon.click()
-        const isMenuOpen = await this.menuTray.isVisible() ? true : false
+        const isMenuOpen = await this.menuTray.isVisible()
         return isMenuOpen
     }
 
     async closeMainMenu():Promise<boolean>{
         await this.logoClose.click()
-        const isMenuClosed = await this.menuTray.isHidden() ? true : false
+        const isMenuClosed = await this.menuTray.isHidden()
         return isMenuClosed
     }
 
