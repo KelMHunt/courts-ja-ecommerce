@@ -1,7 +1,6 @@
-
 //Helper function for primitive array equality
 export function isEqual(arr1: string[], arr2:string[]) : boolean {
-    const flag : boolean = false
+
 
     if(arr1.length != arr2.length){
         return false
@@ -14,3 +13,5 @@ export function isEqual(arr1: string[], arr2:string[]) : boolean {
     }
     return true
 }
+
+
