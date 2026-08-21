@@ -3,12 +3,14 @@ import type { Product } from './productDetailPage'
 import type { Cart } from './cart'
 import type { FilterMenu } from './components/filterMenu'
 import type { SortMenu } from './components/sortMenu'
+import { BasePage } from './basePage'
 
-export class ProductListing
+export class ProductListing extends BasePage
 {
     //variables
-    private readonly page: Page
+    // private readonly page: Page
     readonly productItems: Locator
+    readonly resultTitle: Locator
     readonly filterBtn: Locator
     readonly sortBtn: Locator
     readonly pagination?: Locator
@@ -17,13 +19,14 @@ export class ProductListing
 
     //constructor
     constructor(page: Page){
-        this.page = page
-        this.productItems = this.page.locator("")
-        this.filterBtn = this.page.locator("")
-        this.sortBtn = this.page.locator("")
-        this.pagination = this.page.locator("")
-        this.filterMenu = this.page.locator("")
-        this.sortMenu = this.page.locator("")
+        super(page)
+        this.productItems = page.locator("")
+        this.resultTitle = page.locator(".result-title")
+        this.filterBtn = page.locator("")
+        this.sortBtn = page.locator("")
+        this.pagination = page.locator("")
+        this.filterMenu = page.locator("")
+        this.sortMenu = page.locator("")
     }
 
     //methods
@@ -39,8 +42,8 @@ export class ProductListing
         return []
     }
 
-    async gotoProductDetailPage():Promise<Product>{
-        return
+    async gotoProductDetailPage():Promise<Product | null>{
+        return null
     }
 
     async addItemToCart(item:string): Promise<boolean>{

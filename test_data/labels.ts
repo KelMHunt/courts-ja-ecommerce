@@ -21,3 +21,11 @@ export const cart =
     totalPriceText: "Total",
     savingsText: "Estimated Savings"
 }
+
+//search texts
+export const search =
+{
+    category: "bathroom",
+    brand: "samsung",
+    item: "sofa"
+}
