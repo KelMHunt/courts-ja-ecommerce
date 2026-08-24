@@ -8,7 +8,7 @@ import { BasePage } from './basePage'
 export class ProductListing extends BasePage
 {
     //variables
-    // private readonly page: Page
+    private readonly listingPage: Page
     readonly productItems: Locator
     readonly resultTitle: Locator
     readonly filterBtn: Locator
@@ -20,13 +20,14 @@ export class ProductListing extends BasePage
     //constructor
     constructor(page: Page){
         super(page)
-        this.productItems = page.locator("")
-        this.resultTitle = page.locator(".result-title")
-        this.filterBtn = page.locator("")
-        this.sortBtn = page.locator("")
-        this.pagination = page.locator("")
-        this.filterMenu = page.locator("")
-        this.sortMenu = page.locator("")
+        this.listingPage = page
+        this.productItems = this.listingPage.locator("")
+        this.resultTitle = this.listingPage.locator(".result-title")
+        this.filterBtn = this.listingPage.locator("")
+        this.sortBtn = this.listingPage.locator("")
+        this.pagination = this.listingPage.locator(".pages li")
+        this.filterMenu = this.listingPage.locator("")
+        this.sortMenu = this.listingPage.locator("")
     }
 
     //methods
@@ -46,15 +47,41 @@ export class ProductListing extends BasePage
         return null
     }
 
-    async addItemToCart(item:string): Promise<boolean>{
-        return false
+    async addItemToCart(item:string): Promise<Cart | null>{
+        return null
     }
 
     async getPages():Promise<Locator[]>{
         return []
     }
 
-    async moveBetweenPages():Promise<boolean>{
+    async movetoNextPage():Promise<void>{
+        const allPages = await this.pagination?.all() ?? []
+    
+        const currentPageIndex = allPages.findIndex(async (pg) =>
+            (await pg.getAttribute("class"))?.includes("current")
+        )
+        
+        if(currentPageIndex < allPages.length){
+            const nextPageIndex = currentPageIndex + 1
+            const nextPage = allPages.find((pg, index)=> index === nextPageIndex)
+            await nextPage?.click()
+            await this.listingPage.waitForTimeout(2000)
+            // console.log(currentPageIndex, nextPageIndex)
+
+        } else {
+            console.log("No more pages left")
+        }
+    }
+
+    async getCurrentPageNumber():Promise<string>{
+        const currentPage = this.listingPage.locator("li.item.current")
+        const pageNum = await currentPage.locator("span").nth(1).innerText()
+       
+        return pageNum
+    }
+
+    async confirmProductListing():Promise<boolean>{
         return false
     }
 }
