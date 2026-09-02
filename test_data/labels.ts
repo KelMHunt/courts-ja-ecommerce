@@ -29,3 +29,10 @@ export const search =
     brand: "samsung",
     item: "sofa"
 }
+
+//filter texts
+export const filter =
+{
+    type: "Brand",
+    option: "Concepts"
+}

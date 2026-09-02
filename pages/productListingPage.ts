@@ -43,7 +43,6 @@ export class ProductListing extends BasePage
     async getAllPrices():Promise<string[]>{
         let prices: string[] = []
         const allPages = await this.pagination?.all() ?? []
-        let counter = 0
 
         while(true){
             const allProducts = await this.productItems.all()
@@ -79,7 +78,26 @@ export class ProductListing extends BasePage
     }
 
     async getAllProductTitles():Promise<string[]>{
-        return []
+        const allPages = await this.pagination?.all() ?? []
+        let titles: string[] = []
+
+        while(true){
+            titles = titles.concat(await this.listingPage.locator(".product-item-link").allInnerTexts())
+            
+            if(allPages.length === 0){ // break loop if no pagination is present
+                break
+            } 
+
+            const currentPageNum = await this.getCurrentPageNumber() 
+            if(Number(currentPageNum) === allPages.length-1){ // break loop when last page is reached
+                break
+            }
+            
+            await this.movetoNextPage()
+        }
+        // debug
+        // console.log(titles)
+        return titles
     }
 
     async gotoProductDetailPage():Promise<Product | null>{
@@ -155,6 +173,17 @@ export class ProductListing extends BasePage
         await this.listingPage.waitForTimeout(2000)
         const descendingPriceOption = this.listingPage.locator("[data-section='product_price_desc']")
         await descendingPriceOption.click()
+        await this.listingPage.waitForTimeout(2000)
+    }
+
+    async applyFilter(type:string, option:string):Promise<void>{
+        
+        await this.filterBtn.click()
+        await this.listingPage.waitForTimeout(2000)
+        const filter = this.listingPage.locator(`.filter-options-title:has-text("${type}")`)
+        await filter.click()
+        const choice = this.listingPage.locator(".filter-options-item").getByLabel(option)
+        await choice.click()
         await this.listingPage.waitForTimeout(2000)
     }
 }
