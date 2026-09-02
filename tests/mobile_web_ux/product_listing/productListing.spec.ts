@@ -21,12 +21,16 @@ test('Verify user can move between product listing pages when more than one page
     const searchText = data.search.item
     const productListing = await search.searchByButton(searchText)
     await productListing.movetoNextPage()
+    await productListing.movetoNextPage()
     const currentPageNum = await productListing.getCurrentPageNumber()
-    expect(currentPageNum).toBe("2")
+    expect(currentPageNum).toBe("3")
 })
 
 test('Verify product listing page displays grid of products with correct details CFS-307', async()=> {
-
+    const searchText = data.search.item
+    const productListing = await search.searchByButton(searchText)
+    const result = await productListing.confirmProductListing()
+    expect(result).toBeTruthy()
 })
 
 test('Verify product listing page is updated when filter is applied CFS-308', async()=> {
@@ -34,6 +38,21 @@ test('Verify product listing page is updated when filter is applied CFS-308', as
 })
 
 test('Verify items are correctly sorted when ascending price sort is applied CFS-309', async()=> {
+    const searchText = data.search.item
+    const productListing = await search.searchByButton(searchText)
+    const pricesBefore = (await productListing.getAllPrices()).map(price => parseFloat(price))
+    const lowesttoHighest = pricesBefore.toSorted((p1, p2) => p1 - p2)
+    
+    //perform sort action on page
+    await productListing.gotoPageNumber("1")
+    await productListing.applyAscendingPriceSort()
+    const pricesAfter = (await productListing.getAllPrices()).map(price => parseFloat(price))
+    
+    //debug
+    // console.log(pricesBefore, lowesttoHighest, pricesAfter)
+
+    //assert 
+    expect(pricesAfter).toEqual(lowesttoHighest)
 
 })
 
