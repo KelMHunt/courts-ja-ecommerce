@@ -57,5 +57,20 @@ test('Verify items are correctly sorted when ascending price sort is applied CFS
 })
 
 test('Verify items are correctly sorted when descending price sort is applied CFS-310', async()=> {
+    const searchText = data.search.item
+    const productListing = await search.searchByButton(searchText)
+    const pricesBefore = (await productListing.getAllPrices()).map(price => parseFloat(price))
+    const highesttoLowest = pricesBefore.toSorted((p1, p2) => p2 - p1)
     
+    //perform sort action on page
+    await productListing.gotoPageNumber("1")
+    await productListing.applyDescendingPriceSort()
+    const pricesAfter = (await productListing.getAllPrices()).map(price => parseFloat(price))
+    
+    //debug
+    // console.log(pricesBefore, highesttoLowest, pricesAfter)
+
+    //assert 
+    expect(pricesAfter).toEqual(highesttoLowest)
+
 })

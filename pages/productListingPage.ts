@@ -150,6 +150,11 @@ export class ProductListing extends BasePage
     }
 
     async applyDescendingPriceSort():Promise<void>{
-
+        
+        await this.sortBtn.click()
+        await this.listingPage.waitForTimeout(2000)
+        const descendingPriceOption = this.listingPage.locator("[data-section='product_price_desc']")
+        await descendingPriceOption.click()
+        await this.listingPage.waitForTimeout(2000)
     }
 }
