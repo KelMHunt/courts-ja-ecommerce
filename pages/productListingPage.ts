@@ -100,7 +100,36 @@ export class ProductListing extends BasePage
         return titles
     }
 
-    async gotoProductDetailPage():Promise<Product | null>{
+    async gotoProductDetailPage(item:string):Promise<Product | null>{
+        const allPages = await this.pagination?.all() ?? []
+
+        while (true) {
+            const allProducts = await this.productItems.all()
+
+            for (const product of allProducts) {
+                const title = await product.locator(".product-item-link").innerText()
+
+                if (title.toLowerCase() === item.toLowerCase()) {
+                    await product.locator("img").click()
+                    await this.listingPage.waitForTimeout(3000)
+                    const productPage = new Product(this.listingPage)
+                    return productPage
+                }
+
+            }
+
+            if (allPages.length === 0) { // break loop if no pagination is present
+                break
+            }
+
+            const currentPageNum = await this.getCurrentPageNumber()
+            if (Number(currentPageNum) === allPages.length - 1) { // break loop when last page is reached
+                break
+            }
+
+            await this.movetoNextPage()
+        }
+        console.log("Item not found")
         return null
     }
 

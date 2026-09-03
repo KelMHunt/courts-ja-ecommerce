@@ -94,6 +94,10 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
     })
 
     test('Verify clicking an item on product listing page opens correct product detail page CFS-314', async()=>{
-
+        const searchText = data.search.item
+        const productListing = await search.searchByButton(searchText)
+        const productPage = await productListing.gotoProductDetailPage(data.products.basic)
+        const title = await productPage?.getProductTitle()
+        expect(title).toBe(data.products.basic)
     })
 })
