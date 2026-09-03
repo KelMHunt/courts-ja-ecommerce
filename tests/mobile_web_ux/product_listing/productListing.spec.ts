@@ -82,4 +82,18 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
         expect(pricesAfter).toEqual(highesttoLowest)
 
     })
+
+    test('Verify user can add item to cart from product listing page CFS-313', async()=>{
+        const searchText = data.search.item
+        const productListing = await search.searchByButton(searchText)
+        const cart = await productListing.addItemToCart(data.products.basic)
+        const items = await cart?.getItemNames()
+        //debug
+        // console.log(items)
+        expect(items).toContain(data.products.basic)
+    })
+
+    test('Verify clicking an item on product listing page opens correct product detail page CFS-314', async()=>{
+
+    })
 })

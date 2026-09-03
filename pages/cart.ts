@@ -30,5 +30,41 @@ export class Cart
     }
 
     //methods
+    async getItemNames(): Promise<string[]>{
+        const itemNames: string[] = []
+        let prevHeight = 0
+
+        await this.tray.hover()
+
+        while(true){
+        
+            await this.tray.evaluate((e) => e.scrollTo(0, e.scrollHeight)) //scroll down cart tray
+
+            const allItems = await this.item.all()
+            const currHeight = await this.tray.evaluate((e) => e.scrollHeight)
+
+            if (currHeight === prevHeight) { //break loop when end of cart tray is reached
+                break
+            } else {
+                for (const item of allItems) {
+                    const name = await item.locator(".product-name").innerText()
+                    itemNames.push(name)
+                }
+            }
+    
+            prevHeight = currHeight
+        }
+
+        return itemNames
+    }
+
+    async getQuantity(): Promise<number>{
+        return 0
+
+    }
+
+    async getTotalPrice(): Promise<string>{
+        return ""
+    }
     
 }

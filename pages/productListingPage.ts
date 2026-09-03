@@ -1,6 +1,6 @@
 import {type Page, type Locator} from '@playwright/test'
-import type { Product } from './productDetailPage'
-import type { Cart } from './cart'
+import { Product } from './productDetailPage'
+import { Cart } from './cart'
 import type { FilterMenu } from './components/filterMenu'
 import type { SortMenu } from './components/sortMenu'
 import { BasePage } from './basePage'
@@ -105,7 +105,36 @@ export class ProductListing extends BasePage
     }
 
     async addItemToCart(item:string): Promise<Cart | null>{
+        const allPages = await this.pagination?.all() ?? []
+
+        while(true){
+            const allProducts = await this.productItems.all()
+            
+            for(const product of allProducts){
+                const title = await product.locator(".product-item-link").innerText()
+                
+                if(title.toLowerCase() === item.toLowerCase()){
+                    await product.locator("button.tocart").click()
+                    const cart = new Cart(this.listingPage)
+                    return cart
+                }
+                
+            }
+
+            if(allPages.length === 0){ // break loop if no pagination is present
+                break
+            }
+
+            const currentPageNum = await this.getCurrentPageNumber()
+            if(Number(currentPageNum) === allPages.length-1){ // break loop when last page is reached
+                break
+            }
+
+            await this.movetoNextPage()
+        }
+        console.log("Item not found")
         return null
+        
     }
 
     async getPages():Promise<Locator[]>{
