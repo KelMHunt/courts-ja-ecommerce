@@ -20,20 +20,20 @@ export class HeroCarousel implements Carousel
     }
 
     //methods
-    async getCarouselItems(): Promise<string[]> {
+    async getCarouselItems(): Promise<Locator[]> {
         return []
     }
 
-    async moveUpCarousel(): Promise<boolean[]> {
-        return []
+    async moveUpCarousel(): Promise<void> {
+       
     }
 
-    async moveDownCarousel(): Promise<boolean[]> {
-        return []
+    async moveDownCarousel(): Promise<void> {
+        
     }
 
-    async confirmCarouselItems(): Promise<boolean[]> {
-        return []
+    async confirmCarouselItems(): Promise<boolean> {
+        return false
     }
 
 }

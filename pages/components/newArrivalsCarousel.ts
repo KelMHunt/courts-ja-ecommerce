@@ -26,74 +26,20 @@ export class NewArrivalsCarousel implements Carousel
 
     }
 
-    async getCarouselItems(): Promise<string[]> {
-        let images: string[] = []
-
-        while (true) {
-            const items = await this.item.all()
-
-            for (const item of items) {
-                const img = await item.locator("img").getAttribute("src")
-                if (images.includes(img!)) {
-                    continue
-                } else {
-                    images.push(img!)
-                }
-            }
-
-            const isDisabled = (await this.nextBtn.getAttribute("class"))?.includes("disabled")
-
-            if (isDisabled) {
-                break
-            } else {
-                await this.nextBtn.click()
-            }
-        }
-        return images
-    }
-
-    async moveUpCarousel(): Promise<boolean[]> {
-
-        let pattern: boolean[] = []
-        const images = await this.getCarouselItems()
-
-        //debug
-        // console.log(`Images[] length: ${images.length}\n Images[] Contents: ${images}`)
-
-        while (true) {
-            const visibleItems = await this.item.all()
-
-            for (let i = 0; i < images.length; i++) {
-                const actualImg = await visibleItems[i]?.locator("img").getAttribute("src")
-                const expectedImg = images[i]
-
-                if (actualImg === expectedImg) {
-                    pattern.push(true)
-                } else {
-                    pattern.push(false)
-                }
-            }
-            const isDisabled = (await this.nextBtn.getAttribute("class"))?.includes("disabled")
-
-            if (isDisabled) {
-                break
-            } else {
-                await this.nextBtn.click()
-            }
-        }
-
-        // debug
-        // console.log(pattern)
-
-        return pattern
-    }
-
-    //to be implemented
-    async moveDownCarousel(): Promise<boolean[]> {
+    async getCarouselItems(): Promise<Locator[]> {
         return []
     }
 
-    async confirmCarouselItems(): Promise<boolean[]> {
+    async moveUpCarousel(): Promise<void> {
+
+    }
+
+    //to be implemented
+    async moveDownCarousel(): Promise<void> {
+        
+    }
+
+    async confirmCarouselItems(): Promise<boolean> {
         let pattern: boolean[]= []
         
         while(true){
@@ -122,7 +68,7 @@ export class NewArrivalsCarousel implements Carousel
             }
         }
 
-        return pattern
+        return pattern.every(result => result ===true)
     }
 
 
