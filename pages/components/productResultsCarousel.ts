@@ -9,37 +9,55 @@ export class ProductResultsCarousel implements Carousel
     readonly prevBtn: Locator
     readonly nextBtn: Locator
     readonly item: Locator
-    readonly image?: Locator
-    readonly price?: Locator
-    readonly title?: Locator
+    readonly image?: string
+    readonly price?: string
+    readonly title?: string
 
     //constructor
     constructor(page:Page){
         this.page = page
-        this.container = this.page.locator("")
-        this.prevBtn = this.page.locator("")
-        this.nextBtn = this.page.locator("")
-        this.item = this.page.locator("")
-        this.image = this.page.locator("")
-        this.price = this.page.locator("")
-        this.title = this.page.locator("")
+        this.container = this.page.locator(".livesearch.popover-container")
+        this.prevBtn = this.container.locator(".left-arrow")
+        this.nextBtn = this.container.locator(".right-arrow")
+        this.item = this.page.locator(".product-result")
+        this.image = "img"
+        this.price = ".prod-price"
+        this.title = ".product-name"
     }
 
     //methods
-    async getCarouselItems(): Promise<string[]> {
-        return []
+    async getCarouselItems(): Promise<Locator[]> {
+        const allItems = await this.item.all()
+        return allItems
     }
 
-    async moveUpCarousel(): Promise<boolean[]> {
-        return []
+    async moveUpCarousel(): Promise<void> {
+        await this.nextBtn.click()
+        await this.page.waitForTimeout(1000)
     }
 
-    async moveDownCarousel(): Promise<boolean[]> {
-        return []
+    async moveDownCarousel(): Promise<void> {
+        await this.prevBtn.click()
+        await this.page.waitForTimeout(1000)
     }
 
-    async confirmCarouselItems(): Promise<boolean[]> {
-        return []
+    async confirmCarouselItems(): Promise<boolean> {
+        const allItems = await this.item.all()
+        const pattern: boolean[] = []
+
+        for(const item of allItems){
+            const image = item.locator("img")
+            const title = item.locator(".product-name")
+            const price = item.locator(".prod-price")
+            
+            if(await image.isVisible() && await title.isVisible() && await price.isVisible()){
+                pattern.push(true)
+            } else {
+                pattern.push(false)
+            }
+        }
+
+        return pattern.every(result => result === true)
     }
 
 }

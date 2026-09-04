@@ -46,22 +46,38 @@ test.describe('Search Tests', {tag:"@regression"}, ()=> {
         }
     })
 
-    test.fixme('Verify live search results is displayed when user input search text CFS-225', async()=> {
-
+    test('Verify live search results is displayed when user input search text CFS-225', async()=> {
+        const searchText = data.search.item
+        const titles = await searchBox.getProductResults(searchText)
+        
+        titles.forEach((title)=> {
+            expect(title.toLowerCase()).toContain(searchText.toLowerCase())
+        })
     })
 
-    test.fixme('Verify clicking right arrow on product results carousel displays next product CFS-226', async()=> {
-
+    test('Verify that each product in product results carousel displays image, title and price CFS-315', async()=> {
+        const searchText = data.search.item
+        await searchBox.fillSearchInput(searchText)
+        const result = await searchBox.productResults.confirmCarouselItems()
+        expect(result).toBeTruthy()
     })
 
-    test.fixme('Verify clicking left arrow on product results carousel displays next product CFS-227', async()=> {
+    test('Verify clicking right arrow on product carousel displays next product CFS-226', async ()=> {
+        const searchText = data.search.item
+        await searchBox.fillSearchInput(searchText)
+        await searchBox.productResults.moveUpCarousel()
+    })
 
+    test('Verify clicking left arrow on product results carousel displays next product CFS-227', async()=> {
+        const searchText = data.search.item
+        await searchBox.fillSearchInput(searchText)
+        await searchBox.productResults.moveUpCarousel()
+        await searchBox.productResults.moveDownCarousel()
     })
 
     test('Verify user can delete search text CFS-229', async()=> {
         const searchText = data.search.item
-        const searchSuggestions = await searchBox.getSearchSuggestions(searchText)
-
+        await searchBox.fillSearchInput(searchText)
         const isEmpty = await searchBox.deleteSearch()
         expect(isEmpty).toBeTruthy()
     })
@@ -77,7 +93,15 @@ test.describe('Search Tests', {tag:"@regression"}, ()=> {
     test('Verify user can go to product listing page by clicking search button CFS-306', async()=> {
         const searchText = data.search.item
         const productListing = await searchBox.searchByButton(searchText)
-        
         await expect(productListing.resultTitle).toContainText(searchText)
+    })
+
+    test('Verify user can go to product details page by clicking an item from product results carousel CFS-312', async ()=> {
+        const searchText = data.search.item
+        const name = data.products.liveSearch
+        await searchBox.fillSearchInput(searchText)
+        const productPage = await searchBox.gotoProductDetailsPage(name)
+        expect(productPage).toBeDefined()
+        await expect(productPage!.productTitle).toContainText(name)
     })
 })

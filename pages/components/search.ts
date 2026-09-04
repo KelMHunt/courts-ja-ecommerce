@@ -1,6 +1,6 @@
 import type {Page, Locator} from '@playwright/test'
 import { ProductListing } from '../productListingPage'
-import type { Product } from '../productDetailPage'
+import { Product } from '../productDetailPage'
 import { ProductResultsCarousel } from './productResultsCarousel'
 
 export class SearchBox
@@ -22,10 +22,14 @@ export class SearchBox
     }
 
     //methods
-    async getSearchSuggestions(searchText:string): Promise<string[]>{
-        
+    async fillSearchInput(searchText:string): Promise<void>{
         await this.searchInput.fill(searchText)
         await this.page.waitForTimeout(3000)
+    }
+
+    async getSearchSuggestions(searchText:string): Promise<string[]>{
+        
+        await this.fillSearchInput(searchText)
         
         const isSearchSuggestionsVisible = await this.searchSuggestions.isVisible()
 
@@ -38,7 +42,16 @@ export class SearchBox
     }
 
     async getProductResults(searchText:string): Promise<string[]>{
-        return await this.productResults.getCarouselItems()
+        await this.fillSearchInput(searchText)
+
+        const allItems = await this.productResults.getCarouselItems()
+        let titles = []
+
+        for(const item of allItems){
+            titles.push(await item.locator(this.productResults.title!).innerText())
+        }
+
+        return titles
     }
 
     async searchBySuggestion(searchText:string): Promise<ProductListing | null>{
@@ -68,7 +81,35 @@ export class SearchBox
         return productListing
     }
 
-    async gotoProductDetailsPage(searchText:string): Promise<Product | null>{
+    async gotoProductDetailsPage(name:string): Promise<Product | null>{
+        const items = await this.productResults.getCarouselItems()
+
+        for(let i=0; i<items.length; i++){
+            const title1 = await items[i]?.locator(this.productResults.title!).innerText()
+            const title2 = await items[i+1]?.locator(this.productResults.title!).innerText()
+            
+            // debug
+            console.log(title1, title2)
+
+            if(title1?.toLowerCase().includes(name.toLowerCase())){
+                await items[i]?.locator(this.productResults.image!).click()
+                await this.page.waitForTimeout(3000)
+                const productPage = new Product(this.page)
+                return productPage
+
+            } else if (title2?.toLowerCase().includes(name.toLowerCase())){
+                await items[i+1]?.locator(this.productResults.image!).click()
+                await this.page.waitForTimeout(3000)
+                const productPage = new Product(this.page)
+                return productPage
+            }
+            
+            const nextBtnIsDisabled = (await this.productResults.nextBtn.getAttribute("class"))?.includes("disabled")
+            if(nextBtnIsDisabled){
+                break
+            }
+            await this.productResults.moveUpCarousel()
+        }
         return null
     }
 
