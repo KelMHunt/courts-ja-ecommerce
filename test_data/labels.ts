@@ -41,5 +41,6 @@ export const filter =
 export const products =
 {
     basic: "Quattro 45 cm x 45 cm Blue Cushion QTTCS129",
-    discounted: "Alpine Decor 3 Tier Shoe Rack AI-UM398 - Black"
+    discounted: "Alpine Decor 3 Tier Shoe Rack AI-UM398 - Black",
+    liveSearch: "Jessica Motion"
 }

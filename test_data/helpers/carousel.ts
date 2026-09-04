@@ -8,17 +8,17 @@ export interface Carousel
     readonly prevBtn: Locator
     readonly nextBtn: Locator
     readonly item: Locator
-    readonly image?: Locator
-    readonly price?: Locator
-    readonly title?: Locator
+    readonly image?: Locator| string
+    readonly price?: Locator| string
+    readonly title?: Locator| string
     readonly cta?: Locator
 
 
     //methods
     
-    getCarouselItems(): Promise<string[]> ;
-    moveUpCarousel(): Promise<boolean[]> ; 
-    moveDownCarousel(): Promise<boolean[]> ;
-    confirmCarouselItems(): Promise<boolean[]>;
+    getCarouselItems(): Promise<Locator[]> ;
+    moveUpCarousel(): Promise<void> ; 
+    moveDownCarousel(): Promise<void> ;
+    confirmCarouselItems(): Promise<boolean>;
 
 }
