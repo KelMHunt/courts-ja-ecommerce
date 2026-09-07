@@ -27,7 +27,8 @@ export const search =
 {
     category: "bathroom",
     brand: "samsung",
-    item: "sofa"
+    item: "sofa",
+    item2: "washer"
 }
 
 //filter texts
@@ -41,6 +42,13 @@ export const filter =
 export const products =
 {
     basic: "Quattro 45 cm x 45 cm Blue Cushion QTTCS129",
-    discounted: "Alpine Decor 3 Tier Shoe Rack AI-UM398 - Black",
+    discounted: "Mabe 17 kg Top Load Washer with Aqua Saver Green WMA77113CBDB0",
     liveSearch: "Jessica Motion"
+}
+
+//product detail page labels
+export const productDetails =
+{
+    status: "in stock",
+    idText: "SKU"
 }
