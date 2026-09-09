@@ -8,7 +8,8 @@ export class Cart
     readonly tray: Locator
     readonly heading: Locator
     readonly closeBtn: Locator
-    readonly quantity: Locator
+    readonly cartQuantity: Locator
+    readonly badge: Locator
     readonly item: Locator
     readonly totalPrice: Locator
     readonly totalSavings: Locator
@@ -21,7 +22,8 @@ export class Cart
         this.tray = this.page.locator("#minicart-sidebar")
         this.heading = this.tray.locator("h4")
         this.closeBtn = this.page.locator(".close-drawer")
-        this.quantity = this.page.locator(".minicart_sidebar__heading__count")
+        this.cartQuantity = this.page.locator(".minicart_sidebar__heading__count")
+        this.badge = this.page.locator(".counter-number")
         this.item = this.page.locator(".minicart_sidebar__content__items__item")
         this.totalPrice = this.page.locator(".cart-info .price")
         this.totalSavings = this.page.locator(".savings-amount div")
@@ -58,13 +60,24 @@ export class Cart
         return itemNames
     }
 
-    async getQuantity(): Promise<number>{
-        return 0
+    async getCartBadge(): Promise<number>{
+        const qty = await this.badge.innerText()
+        return parseInt(qty)
+    }
 
+    async getCartQuantity():Promise<number>{
+        const qty = (await this.cartQuantity.innerText()).split(" ")[0] ?? ""
+        // console.log(qty)
+        return parseInt(qty)
     }
 
     async getTotalPrice(): Promise<string>{
         return ""
+    }
+
+    async close(): Promise<void>{
+        await this.closeBtn.click()
+        await this.page.waitForTimeout(2000)
     }
     
 }

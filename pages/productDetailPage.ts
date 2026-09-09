@@ -31,7 +31,7 @@ export class Product extends BasePage
         this.productPage = page
         this.productImage = this.productPage.locator("[data-gallery-role='stage-shaft']")
         this.productTitle = this.productPage.locator("h1.page-title")
-        this.productPrice = this.productPage.locator("")
+        this.productPrice = this.productPage.locator(".product-info-price .price")
         this.gallery = this.productPage.locator(".fs-gallery__dialog")
         this.showGalleryBtn = this.productPage.locator("[aria-label*='Show all']")
         this.ratingStars = this.productPage.locator(".rating-stars").first()
@@ -83,25 +83,66 @@ export class Product extends BasePage
     }
 
     async getProductPrice():Promise<number>{
-        return 0
+        let price
+        
+        if(this.discount){
+            price = this.productPrice.first()
+        } else {
+            price = this.productPrice
+        }
+
+        const priceText = (await price.innerText()).split("$")[1] ?? ""
+        const formattedPrice = priceText?.replace(",", "")
+        return parseFloat(formattedPrice)
+       
     }
 
-    async getDescriptionContent():Promise<Locator | null>{
-        return null
+    async getDescriptionContent():Promise<string | null>{
+        await this.descriptionBtn.click()
+        const descriptionContent = await this.productPage.locator(".description .text-content").innerText()
+        return descriptionContent
     }
 
-    async getSpecsContent():Promise<Locator | null>{
-        return null
+    async getSpecsContent():Promise<string[] | null>{
+        await this.specsBtn.click()
+        const specsTable = this.productPage.locator("#product-attribute-specs-table")
+        const specsHeadings = (await specsTable.locator("th").allInnerTexts()).map(text => text.toLowerCase())
+        return specsHeadings
     }
 
     async browseGallery():Promise<void>{
 
     }
 
-    async addToCart(item:string):Promise<Cart |null>{
-        return null
+    async addToCart(qty?: number):Promise<Cart| null>{
+        await this.addToCartBtn.click()
+        await this.productPage.waitForTimeout(2000)
+        const cart = new Cart(this.productPage)
+        await cart.close()
+
+        const increaseBtn = this.productPage.locator("[aria-label='Increase quantity']")
+    
+        if(qty && qty>1){
+            await increaseBtn.click({clickCount:qty-1})
+            await increaseBtn.waitFor({state:'visible'})
+        }
+        await this.productPage.waitForTimeout(2000)
+        return cart
     }
     
+    async decreaseQuantity(qty?:number):Promise<void>{
+        const decreaseBtn = this.productPage.locator("[aria-label='Decrease quantity']")
+    
+        if(qty && qty>1){
+            await decreaseBtn.click({clickCount: qty})
+            await decreaseBtn.waitFor({state: 'visible'})
+            
+        } else {
+            await decreaseBtn.click()
+        }
+        await this.productPage.waitForTimeout(2000)
+    }
+
     // async makeProductReview():Promise<ProductReview|null>{
     //     return null
     // }
