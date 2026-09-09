@@ -1,4 +1,4 @@
-import {type Page, type Locator} from '@playwright/test'
+import type {Page, Locator} from '@playwright/test'
 import { BasePage } from './basePage';
 import { Cart } from './cart';
 
@@ -110,8 +110,30 @@ export class Product extends BasePage
         return specsHeadings
     }
 
-    async browseGallery():Promise<void>{
+    async getGalleryTitle():Promise<string>{
+        const title = await this.gallery.locator(".fs-gallery__title").innerText()
+        return title
+    }
 
+    async openGallery():Promise<void>{
+        await this.showGalleryBtn.click()
+        await this.productPage.waitForTimeout(2000)
+    }
+
+    async closeGallery():Promise<void>{
+        const closeBtn = this.gallery.locator("[aria-label='Close']")
+        await closeBtn.click()
+        await this.productPage.waitForTimeout(2000)
+    }
+
+    async browseGallery():Promise<void> {
+        const nextBtn = this.gallery.locator(".fs-gallery__arrow--next")
+        const galleryCounter = (await this.gallery.locator(".fs-gallery__counter").innerText()).split("/")[0]?.trim()
+        const limit = (await this.gallery.locator(".fs-gallery__counter").innerText()).split("/")[1]?.trim()
+
+        for(let i=parseInt(galleryCounter!); i<=parseInt(limit!); i++){
+            await nextBtn.click()
+        }
     }
 
     async addToCart(qty?: number):Promise<Cart| null>{
