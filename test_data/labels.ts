@@ -50,5 +50,6 @@ export const products =
 export const productDetails =
 {
     status: "in stock",
-    idText: "SKU"
+    idText: "SKU",
+    specs: "washing capacity"
 }
