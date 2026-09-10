@@ -3,6 +3,7 @@ import { BasePage } from '../../../pages/basePage'
 import { SearchBox } from '../../../pages/components/search'
 import type { Page } from '@playwright/test'
 import * as data from '../../../test_data/labels'
+import * as inputs from '../../../test_data/inputs'
 import type { Product } from '../../../pages/productDetailPage'
 
 
@@ -16,7 +17,7 @@ test.beforeAll(async({browser}) => {
     page = await browser.newPage()
     searchBox = new SearchBox(page)
     base = new BasePage(page)
-    const searchText = data.search.item2
+    const searchText = inputs.search.item2
 
     await page.goto("")
     await base.closePreferences()

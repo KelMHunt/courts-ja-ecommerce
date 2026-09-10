@@ -22,15 +22,6 @@ export const cart =
     savingsText: "Estimated Savings"
 }
 
-//search texts
-export const search =
-{
-    category: "bathroom",
-    brand: "samsung",
-    item: "sofa",
-    item2: "washer"
-}
-
 //filter texts
 export const filter =
 {

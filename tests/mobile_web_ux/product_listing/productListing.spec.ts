@@ -3,10 +3,12 @@ import type {Page} from '@playwright/test'
 import { ProductListing } from '../../../pages/productListingPage'
 import { SearchBox } from '../../../pages/components/search'
 import * as data from '../../../test_data/labels'
+import * as inputs from '../../../test_data/inputs'
 
 let page:Page
 let productListing:ProductListing
 let search: SearchBox
+const searchText = inputs.search.item
 
 test.beforeAll(async({browser}) => {
     page = await browser.newPage()
@@ -20,7 +22,6 @@ test.beforeAll(async({browser}) => {
 test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
 
     test('Verify user can move between product listing pages when more than one pages are available CFS-311', async () => {
-        const searchText = data.search.item
         const productListing = await search.searchByButton(searchText)
         await productListing.movetoNextPage()
         await productListing.movetoNextPage()
@@ -29,14 +30,12 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
     })
 
     test('Verify product listing page displays grid of products with correct details CFS-307', async () => {
-        const searchText = data.search.item
         const productListing = await search.searchByButton(searchText)
         const result = await productListing.confirmProductListing()
         expect(result).toBeTruthy()
     })
 
     test('Verify product listing page is updated when filter is applied CFS-308', async () => {
-        const searchText = data.search.item
         const productListing = await search.searchByButton(searchText)
         await productListing.applyFilter(data.filter.type, data.filter.option)
         const titles = await productListing.getAllProductTitles()
@@ -46,7 +45,6 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
     })
 
     test('Verify items are correctly sorted when ascending price sort is applied CFS-309', async () => {
-        const searchText = data.search.item
         const productListing = await search.searchByButton(searchText)
         const pricesBefore = (await productListing.getAllPrices()).map(price => parseFloat(price))
         const lowesttoHighest = pricesBefore.toSorted((p1, p2) => p1 - p2)
@@ -65,7 +63,6 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
     })
 
     test('Verify items are correctly sorted when descending price sort is applied CFS-310', async () => {
-        const searchText = data.search.item
         const productListing = await search.searchByButton(searchText)
         const pricesBefore = (await productListing.getAllPrices()).map(price => parseFloat(price))
         const highesttoLowest = pricesBefore.toSorted((p1, p2) => p2 - p1)
@@ -84,7 +81,6 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
     })
 
     test('Verify user can add item to cart from product listing page CFS-313', async()=>{
-        const searchText = data.search.item
         const productListing = await search.searchByButton(searchText)
         const cart = await productListing.addItemToCart(data.products.basic)
         const items = await cart?.getItemNames()
@@ -94,7 +90,6 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
     })
 
     test('Verify clicking an item on product listing page opens correct product detail page CFS-314', async()=>{
-        const searchText = data.search.item
         const productListing = await search.searchByButton(searchText)
         const productPage = await productListing.gotoProductDetailPage(data.products.basic)
         const title = await productPage?.getProductTitle()

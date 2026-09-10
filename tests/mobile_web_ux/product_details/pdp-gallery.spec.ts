@@ -4,6 +4,7 @@ import { BasePage } from '../../../pages/basePage'
 import { SearchBox } from '../../../pages/components/search'
 import type { Product } from '../../../pages/productDetailPage'
 import * as data from '../../../test_data/labels'
+import * as inputs from '../../../test_data/inputs'
 
 let page: Page
 let searchBox: SearchBox
@@ -14,7 +15,7 @@ test.beforeAll(async({browser})=> {
     page = await browser.newPage()
     base = new BasePage(page)
     searchBox = new SearchBox(page)
-    const searchText = data.search.item2
+    const searchText = inputs.search.item2
 
     await page.goto("")
     await base.closePreferences()
