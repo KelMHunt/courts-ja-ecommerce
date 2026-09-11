@@ -2,6 +2,7 @@ import type {Page, Locator} from '@playwright/test'
 import { BasePage } from './basePage';
 import { Cart } from './cart';
 
+
 export class Product extends BasePage
 {
     //variables
@@ -23,7 +24,7 @@ export class Product extends BasePage
     readonly specsBtn: Locator
     // readonly warrantyCarousel: WarrantyCarousel
     readonly writeReviewBtn: Locator
-    // readonly productReview: ProductReview
+
 
     //constructor
     constructor(page: Page){
@@ -46,7 +47,6 @@ export class Product extends BasePage
         this.discount = this.productPage.locator(".product-info-price .discount")
         // this.warrantyCarousel = new WarrantyCarousel(this.productPage)
         this.writeReviewBtn = this.productPage.locator("button.rr-write-review")
-        // this.productReview = new ProductReview(this.productPage)
         
     }
 
@@ -165,9 +165,81 @@ export class Product extends BasePage
         await this.productPage.waitForTimeout(2000)
     }
 
-    // async makeProductReview():Promise<ProductReview|null>{
-    //     return null
-    // }
+    async gotoReviews():Promise<void>{
+        await this.reviewLink.click()
+        await this.productPage.waitForTimeout(2000)
+    }
 
+    async getReviewsCount(): Promise<number>{
+        const reviews = this.productPage.locator(".rr-review")
+        return await reviews.count()
+    }
+
+    async makeProductReview(name:string, title:string, message:string, rating: number):Promise<void>{
+       await this.writeReviewBtn.click()
+       await this.productPage.waitForTimeout(2000)
+
+       const reviewForm = this.productPage.locator("#review-form")
+       const nameInput = reviewForm.locator("#nickname_field")
+       const summaryInput = reviewForm.locator("#summary_field")
+       const reviewInput = reviewForm.locator("#review_field")
+
+       await nameInput.fill(name)
+       await summaryInput.fill(title)
+       await reviewInput.fill(message)
+
+    //    await this.selectStarRating(rating)
+       await this.productPage.waitForTimeout(2000)
+    }
+
+    //function not working -- not selecting star icons
+    private async selectStarRating(choice:number):Promise<void>{
+
+        const reviewForm = this.productPage.locator("#review-form")
+        const votes = await reviewForm.locator(".review-control-vote input").all()
+        let hasVote = false
+        
+        for(const vote of votes){
+            const value = parseInt(await vote.inputValue())
+
+            switch (choice) {
+                case 1:
+                    if(value===choice){
+                        await reviewForm.locator("#Overall\ rating_1").click()
+                        hasVote = true
+                    }
+                    break
+                case 2:
+                    if(value===choice){
+                        await reviewForm.locator("#Overall\ rating_2").click()
+                        hasVote = true
+                    }
+                    break
+                case 3:
+                    if(value===choice){
+                        await reviewForm.locator("#Overall\ rating_3").click()
+                        hasVote = true
+                    }
+                    break
+                case 4:
+                    if(value===choice){
+                        await reviewForm.locator("#Overall\ rating_4").click()
+                        hasVote = true
+                    }
+                    break
+                case 5:
+                    if(value===choice){
+                        await reviewForm.locator("#Overall\ rating_5").click()
+                        hasVote = true
+                    }
+                    break
+                default:
+                    console.log("Invalid choice")
+
+            }
+            if(hasVote) break
+        }
+        
+    }
 
 }
