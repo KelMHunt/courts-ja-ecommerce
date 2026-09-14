@@ -1,6 +1,7 @@
 import type {Page, Locator} from '@playwright/test'
 import { BasePage } from './basePage';
 import { Cart } from './cart';
+import { WarrantyCarousel } from './components/warrantyCarousel';
 
 
 export class Product extends BasePage
@@ -22,7 +23,7 @@ export class Product extends BasePage
     readonly buyNowBtn: Locator
     readonly descriptionBtn: Locator
     readonly specsBtn: Locator
-    // readonly warrantyCarousel: WarrantyCarousel
+    readonly warrantyCarousel: WarrantyCarousel
     readonly writeReviewBtn: Locator
 
 
@@ -45,7 +46,7 @@ export class Product extends BasePage
         this.descriptionBtn = this.productPage.locator("a[href='#description']")
         this.specsBtn = this.productPage.locator("a[href='#additional']")
         this.discount = this.productPage.locator(".product-info-price .discount")
-        // this.warrantyCarousel = new WarrantyCarousel(this.productPage)
+        this.warrantyCarousel = new WarrantyCarousel(this.productPage)
         this.writeReviewBtn = this.productPage.locator("button.rr-write-review")
         
     }

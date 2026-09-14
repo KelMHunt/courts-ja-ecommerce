@@ -42,5 +42,6 @@ export const productDetails =
 {
     status: "in stock",
     idText: "SKU",
-    specs: "washing capacity"
+    specs: "washing capacity",
+    defaultWarranty: "No Coverage"
 }
