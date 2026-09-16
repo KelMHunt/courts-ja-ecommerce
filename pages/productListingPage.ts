@@ -104,30 +104,29 @@ export class ProductListing extends BasePage
         const allPages = await this.pagination?.all() ?? []
 
         while (true) {
-            const allProducts = await this.productItems.all()
+            
+            const productTitles = await this.productItems.locator(".product-item-link").allInnerTexts()
 
-            for (const product of allProducts) {
-                const title = await product.locator(".product-item-link").innerText()
+            if(productTitles.includes(item)){
+                const targetProduct = this.listingPage.locator('li.item.product', { has: this.listingPage.locator(".product-item-link", { hasText: `${item}` }) })
 
-                if (title.toLowerCase() === item.toLowerCase()) {
-                    await product.locator("img").click()
-                    await this.listingPage.waitForTimeout(3000)
+                if (targetProduct) {
+                    await targetProduct.locator("img").click()
                     const productPage = new Product(this.listingPage)
+                    await productPage.productTitle.waitFor({state: 'visible'})
                     return productPage
                 }
-
-            }
-
-            if (allPages.length === 0) { // break loop if no pagination is present
+            } else if (allPages.length === 0) { // break loop if no pagination is present
                 break
-            }
+            } else {
+                const currentPageNum = await this.getCurrentPageNumber()
+                if (Number(currentPageNum) === allPages.length - 1) { // break loop when last page is reached
+                    break
+                }
 
-            const currentPageNum = await this.getCurrentPageNumber()
-            if (Number(currentPageNum) === allPages.length - 1) { // break loop when last page is reached
-                break
+                await this.movetoNextPage()
             }
-
-            await this.movetoNextPage()
+           
         }
         console.log("Item not found")
         return null
@@ -137,33 +136,46 @@ export class ProductListing extends BasePage
         const allPages = await this.pagination?.all() ?? []
 
         while(true){
-            const allProducts = await this.productItems.all()
-            
-            for(const product of allProducts){
-                const title = await product.locator(".product-item-link").innerText()
-                
-                if(title.toLowerCase() === item.toLowerCase()){
-                    await product.locator("button.tocart").click()
+
+            const productTitles = await this.productItems.locator(".product-item-link").allInnerTexts()
+
+            if(productTitles.includes(item)){
+                const targetProduct = this.listingPage.locator("li.item.product", { has: this.listingPage.locator(".product-item-link", { hasText: item }) })
+
+                if (targetProduct) {
+                    await targetProduct.locator("button.tocart").click()
                     const cart = new Cart(this.listingPage)
+                    await cart.tray.waitFor({ state: 'visible' })
                     return cart
                 }
-                
-            }
-
-            if(allPages.length === 0){ // break loop if no pagination is present
+            } else if(allPages.length === 0){ // break loop if no pagination is present
                 break
-            }
+            } else {
 
-            const currentPageNum = await this.getCurrentPageNumber()
-            if(Number(currentPageNum) === allPages.length-1){ // break loop when last page is reached
-                break
-            }
+                const currentPageNum = await this.getCurrentPageNumber()
+                if (Number(currentPageNum) === allPages.length - 1) { // break loop when last page is reached
+                    break
+                }
 
-            await this.movetoNextPage()
+                await this.movetoNextPage()
+            }
+            
         }
         console.log("Item not found")
         return null
-        
+    }
+
+    async addMultipleItemstoCart(items:string[]):Promise<void>{
+        if (items.length > 0) {
+            for (const item of items) {
+                const cart = await this.addItemToCart(item)
+                await cart?.tray.waitFor({ state: 'visible' })
+                await cart?.close()
+
+            }
+        } else {
+            console.log("No items were given to add to cart")
+        }
     }
 
     async getPages():Promise<Locator[]>{
