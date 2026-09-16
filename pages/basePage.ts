@@ -69,4 +69,22 @@ export class BasePage
         const url = page.url()
         return url
     }
+
+    async scrollTo(element: Locator): Promise<void>{
+        const position = await element.evaluate(e => e.scrollHeight)
+        let prevHeight = 0
+       
+        while(true){
+            await this.page.evaluate(p => window.scrollTo(0, document.body.scrollHeight))
+
+            const currHeight = await this.page.evaluate(p => document.body.scrollHeight)
+
+            if(currHeight === position){
+                break
+            } else if(currHeight === prevHeight){
+                break
+            }
+            prevHeight = currHeight
+        }
+    }
 }
