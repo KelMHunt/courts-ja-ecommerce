@@ -1,5 +1,5 @@
 import {type Page, type Locator} from '@playwright/test'
-import { type Carousel } from '../../test_data/helpers/carousel'
+import { type Carousel } from '../../helpers/carousel'
 
 export class HeroCarousel implements Carousel
 {

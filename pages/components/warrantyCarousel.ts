@@ -1,5 +1,5 @@
 import type {Page, Locator} from '@playwright/test'
-import type { Carousel } from '../../test_data/helpers/carousel'
+import type { Carousel } from '../../helpers/carousel'
 import { match } from 'node:assert'
 
 export class WarrantyCarousel implements Carousel

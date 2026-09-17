@@ -1,6 +1,6 @@
 import {type Page, type Locator} from '@playwright/test'
 import * as data from '../../test_data/footerMenuData'
-import * as helper from '../../test_data/helpers/functions'
+import * as helper from '../../helpers/functions'
 
 export class FooterMenu
 {

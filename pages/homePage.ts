@@ -1,6 +1,6 @@
 import {type Page, type Locator} from '@playwright/test'
 import { BasePage } from './basePage'
-import * as helper from '../test_data/helpers/functions'
+import * as helper from '../helpers/functions'
 import { NewArrivalsCarousel } from './components/newArrivalsCarousel'
 import { BrandsCarousel } from './components/brandsCarousel'
 import { HeroCarousel } from './components/heroCarousel'

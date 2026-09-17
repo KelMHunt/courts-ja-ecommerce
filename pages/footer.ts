@@ -1,6 +1,6 @@
 import {type Page, type Locator, type BrowserContext} from '@playwright/test'
 import * as data from '../test_data/footerData'
-import * as helper from '../test_data/helpers/functions'
+import * as helper from '../helpers/functions'
 
 
 export class Footer
