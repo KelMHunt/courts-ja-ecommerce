@@ -6,6 +6,7 @@ import { ProductListing } from '../../../pages/productListingPage'
 import { Cart } from '../../../pages/cart'
 import * as data from '../../../test_data/labels'
 import * as inputs from '../../../test_data/inputs'
+import * as helper from '../../../helpers/functions'
 
 
 let page: Page
@@ -57,6 +58,14 @@ test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
         const subtotal = await cart?.getSubtotal() 
         const prices = await cart?.getItemPrices()
         expect(subtotal).toEqual(prices![0])
+    })
+
+    test.only('Verify tax total reflects 15% of the cost of each item in the cart CFS-340', async()=> {
+        const taxTotal = await cart?.getTaxTotal()
+        const prices = await cart?.getItemPrices()
+        const sum = helper.findSum(prices!)
+        const calcTax = helper.calcTax(sum)
+        expect(taxTotal).toEqual(calcTax)
     })
 
 

@@ -1,6 +1,7 @@
 import {type Page, type Locator} from '@playwright/test'
 
 
+
 export class Cart
 {
     //variables
@@ -166,6 +167,12 @@ export class Cart
         const subtotal = (await this.tray.locator(".subtotal").innerText()).split("$")[1]
         const formattedSubtotal = subtotal?.replace(",", "")
         return parseFloat(formattedSubtotal!)
+    }
+
+    async getTaxTotal(): Promise<number>{
+        const taxTotal = (await this.tray.locator(".tax").innerText()).split("$") [1]
+        const formattedTaxTotal = taxTotal?.replace(",", "")
+        return parseFloat(formattedTaxTotal!)
     }
 
     async getTotalPrice(): Promise<string>{
