@@ -105,5 +105,17 @@ export class Cart
         console.log("Item not in cart")
         return null
     }
+
+    async removeItem(item:string): Promise<void>{
+        const targetItem = this.item.filter({hasText: item})
+        const confirmBtn = this.page.locator(".confirm .action-accept")
+
+        if(targetItem){
+            const deleteBtn = targetItem.locator(".fa-xmark")
+            await deleteBtn.click()
+        }
+        await confirmBtn.waitFor({state:'visible'})
+        await confirmBtn.click()
+    }
     
 }

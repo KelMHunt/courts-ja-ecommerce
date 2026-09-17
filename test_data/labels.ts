@@ -19,7 +19,8 @@ export const cart =
     heading: "Products added to cart",
     viewCartCTA: "View Cart",
     totalPriceText: "Total",
-    savingsText: "Estimated Savings"
+    savingsText: "Estimated Savings",
+    deleteMsg: "Are you sure you would like to remove this item from the shopping cart?"
 }
 
 //filter texts
@@ -53,3 +54,5 @@ export const productDetails =
     specs: "washing capacity",
     defaultWarranty: "No Coverage"
 }
+
+

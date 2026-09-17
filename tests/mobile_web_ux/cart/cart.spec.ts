@@ -14,6 +14,7 @@ let searchBox: SearchBox
 let productListing: ProductListing
 let cart: Cart | null
 const searchText = inputs.search.item3
+const item = data.products.discounted2
 
 test.beforeAll(async({browser}) => {
     page = await browser.newPage()
@@ -23,23 +24,30 @@ test.beforeAll(async({browser}) => {
     await page.goto("")
     await base.closePreferences()
     productListing = await searchBox.searchByButton(searchText)
-    cart = await productListing.addItemToCart(data.products.discounted2)
+    cart = await productListing.addItemToCart(item)
 })
 
 test.describe('Cart Tests', {tag:"@regression"}, async() => {
 
     test('Verify item quantity can be increased from cart CFS-333', async()=> {
-        const itemQty = await cart?.incrementItem(data.products.discounted2)
+        const itemQty = await cart?.incrementItem(item)
         expect(itemQty).toBe(2)
     })
 
     test('Verify item quantity can be decreased from cart CFS-334', async()=> {
-        const qtyBefore = await cart?.incrementItem(data.products.discounted2)
-        const qtyAfter = await cart?.decrementItem(data.products.discounted2)
+        const qtyBefore = await cart?.incrementItem(item)
+        const qtyAfter = await cart?.decrementItem(item)
         expect(qtyBefore).toBe(2)
         expect(qtyAfter).toBe(1)
     })
 
+    test('Verify item can be removed from cart CFS-335', async()=> {
+        
+        await cart?.removeItem(item)
+        await page.waitForTimeout(2000)
+        const qty = await cart?.getCartQuantity()
+        expect(qty).toEqual(0)
+    })
     
 })
 
