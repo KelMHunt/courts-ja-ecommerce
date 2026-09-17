@@ -35,6 +35,7 @@ export const products =
     basic: "Cushion Quattro 45x45 cm Green QTTCS098",
     basic2: "Alpine Decor White Artificial Plant with Pot UMA47364",
     discounted: "Mabe 17 kg Top Load Washer with Aqua Saver Green WMA77113CBDB0",
+    discounted2: "Black + Decker Electric Kettle 1.7 L – Stainless Steel KE2000SD",
     liveSearch: "Jessica Motion",
     phones: 
     [

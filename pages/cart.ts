@@ -79,5 +79,31 @@ export class Cart
         await this.closeBtn.click()
         await this.page.waitForTimeout(2000)
     }
+
+    async incrementItem(item:string): Promise<number | null>{
+        const targetItem = this.item.filter({hasText: item})
+        if(targetItem){
+            const plusBtn = targetItem.locator(".ctrl__button--increment")
+            await plusBtn.click()
+            await this.page.waitForTimeout(3000)
+            const qty = await targetItem.locator("input").getAttribute("data-item-boxqty")
+            return Number(qty)
+        }
+        console.log("Item not in cart")
+        return null
+    }
+
+    async decrementItem(item:string): Promise <number | null>{
+        const targetItem = this.item.filter({hasText: item})
+        if(targetItem){
+            const plusBtn = targetItem.locator(".ctrl__button--decrement")
+            await plusBtn.click()
+            await this.page.waitForTimeout(3000)
+            const qty = await targetItem.locator("input").getAttribute("data-item-boxqty")
+            return Number(qty)
+        }
+        console.log("Item not in cart")
+        return null
+    }
     
 }
