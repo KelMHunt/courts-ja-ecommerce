@@ -60,6 +60,97 @@ export class Cart
         return itemNames
     }
 
+    async getItemPrices(): Promise<number[]>{
+        const prices: number[] = []
+        let prevHeight = 0
+        let price
+
+        await this.tray.hover()
+
+        while(true){
+        
+            await this.tray.evaluate((e) => e.scrollTo(0, e.scrollHeight)) //scroll down cart tray
+
+            const allItems = await this.item.all()
+            const currHeight = await this.tray.evaluate((e) => e.scrollHeight)
+
+            if (currHeight === prevHeight) { //break loop when end of cart tray is reached
+                break
+            } else {
+                for (const item of allItems) {
+                    const hasDiscount = item.locator("discount-label") ? true : false
+                    
+                    if(hasDiscount){
+                        price = (await item.locator(".current-price").innerText()).split("$")[1]
+                    } else {
+                        price = (await item.locator(".price").innerText()).split("$")[1]
+                    }
+                    const formattedPrice = price?.replace(",","")
+                    prices.push(parseFloat(formattedPrice!))
+                }
+            }
+    
+            prevHeight = currHeight
+        }
+        return prices
+    }
+
+    async getItemImages(): Promise<string[]>{
+        const images: string[] = []
+        let prevHeight = 0
+
+        await this.tray.hover()
+
+        while(true){
+        
+            await this.tray.evaluate((e) => e.scrollTo(0, e.scrollHeight)) //scroll down cart tray
+
+            const allItems = await this.item.all()
+            const currHeight = await this.tray.evaluate((e) => e.scrollHeight)
+
+            if (currHeight === prevHeight) { //break loop when end of cart tray is reached
+                break
+            } else {
+                for (const item of allItems) {
+                    const img = await item.locator("img").getAttribute("alt") ?? ""
+                    images.push(img)
+                }
+            }
+    
+            prevHeight = currHeight
+        }
+
+        return images
+    }
+
+    async getItemQuantities(): Promise<number[]>{
+        const qtys: number[] = []
+        let prevHeight = 0
+
+        await this.tray.hover()
+
+        while(true){
+        
+            await this.tray.evaluate((e) => e.scrollTo(0, e.scrollHeight)) //scroll down cart tray
+
+            const allItems = await this.item.all()
+            const currHeight = await this.tray.evaluate((e) => e.scrollHeight)
+
+            if (currHeight === prevHeight) { //break loop when end of cart tray is reached
+                break
+            } else {
+                for (const item of allItems) {
+                    const amt = await item.locator("input").getAttribute("data-item-boxqty") ?? ""
+                    qtys.push(parseInt(amt))
+                }
+            }
+    
+            prevHeight = currHeight
+        }
+
+        return qtys
+    }
+
     async getCartBadge(): Promise<number>{
         const qty = await this.badge.innerText()
         return parseInt(qty)
