@@ -53,8 +53,12 @@ test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
         expect(qty).toEqual(0)
     })
 
-    
-    
+    test('Verify cart subtotal reflects the discounted price when discounted item is added to cart CFS-339', async()=> {
+        const subtotal = await cart?.getSubtotal() 
+        const prices = await cart?.getItemPrices()
+        expect(subtotal).toEqual(prices![0])
+    })
+
 
 })
 

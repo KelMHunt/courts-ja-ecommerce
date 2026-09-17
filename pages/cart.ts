@@ -162,6 +162,12 @@ export class Cart
         return parseInt(qty)
     }
 
+    async getSubtotal():Promise<number>{
+        const subtotal = (await this.tray.locator(".subtotal").innerText()).split("$")[1]
+        const formattedSubtotal = subtotal?.replace(",", "")
+        return parseFloat(formattedSubtotal!)
+    }
+
     async getTotalPrice(): Promise<string>{
         return ""
     }
