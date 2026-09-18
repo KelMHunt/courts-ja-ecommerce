@@ -89,8 +89,8 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
 test.describe('Add Multiple Items PLP Test', {tag:"@regression"}, ()=> {
 
     test('Verify multiple items can be added to cart CFS-336', async()=> {
-        const searchText = inputs.search.brand
+        const searchText = inputs.search.category
         productListing = await searchBox.searchByButton(searchText)
-        await productListing.addMultipleItemstoCart(data.products.phones)
+        await productListing.addMultipleItemstoCart(data.products.bedding)
     })
 })

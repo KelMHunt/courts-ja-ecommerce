@@ -38,11 +38,11 @@ export const products =
     discounted: "Mabe 17 kg Top Load Washer with Aqua Saver Green WMA77113CBDB0",
     discounted2: "Black + Decker Electric Kettle 1.7 L – Stainless Steel KE2000SD",
     liveSearch: "Jessica Motion",
-    phones: 
+    bedding: 
     [
-        "Samsung Galaxy A36 Smartphone 128GB - White", 
-        "Samsung Galaxy A17 6GB 128GB - Grey", 
-        "Samsung Galaxy A26 8GB 256GB Smartphone - Green"
+        "Protect A Bed Waterproof Mattress Protector - Twin", 
+        "Quattro 4-Piece Queen Bed Sheet Set QTTBSSEQ06 - Beige", 
+        "Quattro 6-Piece Queen Bed Sheet Set QTTBSSMQ03 - Navy Blue"
     ]
 }
 

@@ -15,7 +15,7 @@ let searchBox: SearchBox
 let productListing: ProductListing
 let cart: Cart | null
 const item = data.products.discounted2
-const items = data.products.phones
+const items = data.products.bedding
 
 test.beforeAll(async({browser}) => {
     page = await browser.newPage()
@@ -60,7 +60,7 @@ test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
         expect(subtotal).toEqual(prices![0])
     })
 
-    test.only('Verify tax total reflects 15% of the cost of each item in the cart CFS-340', async()=> {
+    test('Verify tax total reflects 15% of the cost of each item in the cart CFS-340', async()=> {
         const taxTotal = await cart?.getTaxTotal()
         const prices = await cart?.getItemPrices()
         const sum = helper.findSum(prices!)
@@ -68,13 +68,15 @@ test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
         expect(taxTotal).toEqual(calcTax)
     })
 
+    
+
 
 })
 
 test.describe('Cart (Multiple Items) Tests', {tag:"@regression"}, ()=> {
     
     test.beforeAll('Multiple Items Test', async()=> {
-        const searchText = inputs.search.brand
+        const searchText = inputs.search.category
         cart = new Cart(page)
         
         productListing = await searchBox.searchByButton(searchText)
@@ -92,6 +94,16 @@ test.describe('Cart (Multiple Items) Tests', {tag:"@regression"}, ()=> {
         expect(prices).toBeDefined()
         expect(quantities?.every(qty => qty === 1)).toBeTruthy()
     })
+
+    test('Verify cart total correctly reflects the total cost of all cart items inclusive of tax CFS-340', async()=> {
+        const actualTotal = await cart?.getTotal()
+        const prices = await cart?.getItemPrices()
+        const sum = helper.findSum(prices!)
+        const calcTax = helper.calcTax(sum)
+        const expectedTotal = (sum + calcTax)
+        console.log(actualTotal, expectedTotal)
+        expect(actualTotal).toEqual(expectedTotal)
+    }) 
 })
 
 

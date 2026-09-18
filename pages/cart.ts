@@ -175,8 +175,10 @@ export class Cart
         return parseFloat(formattedTaxTotal!)
     }
 
-    async getTotalPrice(): Promise<string>{
-        return ""
+    async getTotal(): Promise<number>{
+        const total = (await this.tray.locator(".cart-info__total").innerText()).split("$")[1]
+        const formattedTotal = total?.replace(",", "")
+        return parseFloat(formattedTotal!)
     }
 
     async close(): Promise<void>{

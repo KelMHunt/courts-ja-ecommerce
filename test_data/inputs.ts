@@ -1,6 +1,6 @@
 export const search =
 {
-    category: "bathroom",
+    category: "bedding",
     brand: "samsung",
     item: "sofa",
     item2: "washer",
