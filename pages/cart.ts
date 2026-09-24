@@ -183,30 +183,28 @@ export class Cart
 
     async close(): Promise<void>{
         await this.closeBtn.click()
-        await this.page.waitForTimeout(2000)
+        await this.tray.waitFor({state:'hidden'})
     }
 
-    async incrementItem(item:string): Promise<number | null>{
+    async incrementItem(item:string): Promise<Locator | null>{
         const targetItem = this.item.filter({hasText: item})
         if(targetItem){
             const plusBtn = targetItem.locator(".ctrl__button--increment")
             await plusBtn.click()
-            await this.page.waitForTimeout(3000)
-            const qty = await targetItem.locator("input").getAttribute("data-item-boxqty")
-            return Number(qty)
+            return targetItem.locator("input[data-item-boxqty]")
+
         }
         console.log("Item not in cart")
         return null
     }
 
-    async decrementItem(item:string): Promise <number | null>{
+    async decrementItem(item:string): Promise <Locator | null>{
         const targetItem = this.item.filter({hasText: item})
         if(targetItem){
             const plusBtn = targetItem.locator(".ctrl__button--decrement")
             await plusBtn.click()
-            await this.page.waitForTimeout(3000)
-            const qty = await targetItem.locator("input").getAttribute("data-item-boxqty")
-            return Number(qty)
+            return targetItem.locator("input[data-item-boxqty]")
+            
         }
         console.log("Item not in cart")
         return null
@@ -222,6 +220,19 @@ export class Cart
         }
         await confirmBtn.waitFor({state:'visible'})
         await confirmBtn.click()
+        await targetItem.waitFor({state:'detached'})
     }
-    
+
+    async removeAllItems(): Promise<void>{
+        const allItems = await this.item.all()
+        const confirmBtn = this.page.locator(".confirm .action-accept")
+
+        for(const item of allItems){
+            const deleteBtn = item.locator(".fa-xmark")
+            await deleteBtn.click()
+            await confirmBtn.waitFor({state:'visible'})
+            await confirmBtn.click()
+            await item.waitFor({state:'detached'})
+        }
+    }    
 }

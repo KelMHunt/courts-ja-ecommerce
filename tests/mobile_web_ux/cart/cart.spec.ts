@@ -17,6 +17,10 @@ let cart: Cart | null
 const item = data.products.discounted2
 const items = data.products.bedding
 
+/* test setup - global at the test file level
+* @test.beforeAll() - once before all tests, create a new page and intialize the base page and search components, navigate to home page and close cookie preference popup
+*/
+
 test.beforeAll(async({browser}) => {
     page = await browser.newPage()
     base = new BasePage(page)
@@ -29,27 +33,43 @@ test.beforeAll(async({browser}) => {
 
 test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
 
+    /* test setup - single item cart tests
+    * @test.beforeAll() - generate 1 product listing page once for all tests
+    * @test.beforeEach() - freshly add an item to cart from the product listing page
+    */
+
     test.beforeAll('Single Items Tests', async()=> {
         const searchText = inputs.search.item3
         productListing = await searchBox.searchByButton(searchText)
+    })
+
+    test.beforeEach(async()=> {
         cart = await productListing.addItemToCart(item)
+    })
+
+    /* test teardown - single item cart tests
+    * @test.afterEach() - remove all items from cart and close the cart
+    */
+
+    test.afterEach(async()=> {
+        await cart?.removeAllItems()
+        await cart?.close()
     })
 
     test('Verify item quantity can be increased from cart CFS-333', async()=> {
         const itemQty = await cart?.incrementItem(item)
-        expect(itemQty).toBe(2)
+        await expect(itemQty!).toHaveValue("2")
     })
 
     test('Verify item quantity can be decreased from cart CFS-334', async()=> {
         const qtyBefore = await cart?.incrementItem(item)
+        await expect(qtyBefore!).toHaveValue("2")
         const qtyAfter = await cart?.decrementItem(item)
-        expect(qtyBefore).toBe(2)
-        expect(qtyAfter).toBe(1)
+        await expect(qtyAfter!).toHaveValue("1")
     })
 
     test('Verify item can be removed from cart CFS-335', async()=> {
         await cart?.removeItem(item)
-        await page.waitForTimeout(2000)
         const qty = await cart?.getCartQuantity()
         expect(qty).toEqual(0)
     })
@@ -72,26 +92,30 @@ test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
     test('Verify cart item is preserved when user closes cart and returns CFS-342', async()=> {
         const itemsBefore = await cart?.getItemNames()
         await cart?.close()
-        await page.waitForTimeout(5000)
+        await page.waitForTimeout(5000) //simulating time away from cart
         await base.openCart()
         const itemsAfter = await cart?.getItemNames()
         expect(itemsAfter).toEqual(itemsBefore)
     })
 
     test('Verify cart items are preserved when user goes back to previous page after adding item to cart CFS-343', async()=> {
-        await page.waitForTimeout(2000)
+        await cart?.item.first().waitFor({state:'visible'})
         const qtyBefore = await cart?.getCartQuantity()
         await cart?.close()
         const response = await page.goBack()
         expect(response === null || response?.ok()).toBeTruthy()
         await page.waitForLoadState()
-        const qtyAfter = await cart?.getCartBadge()
+        await base.openCart()
+        const qtyAfter = await cart?.getCartQuantity()
         expect(qtyBefore).toEqual(qtyAfter)
     })
 })
 
 test.describe('Cart (Multiple Items) Tests', {tag:"@regression"}, ()=> {
     
+    /* test setup - multiple item cart tests
+    * @test.beforeAll() - generate 1 product listing page and add multiple items from that page to the cart only once
+    */
     test.beforeAll('Multiple Items Test', async()=> {
         const searchText = inputs.search.category
         cart = new Cart(page)
@@ -117,8 +141,7 @@ test.describe('Cart (Multiple Items) Tests', {tag:"@regression"}, ()=> {
         const prices = await cart?.getItemPrices()
         const sum = helper.findSum(prices!)
         const calcTax = helper.calcTax(sum)
-        const expectedTotal = (sum + calcTax)
-        console.log(actualTotal, expectedTotal)
+        const expectedTotal = parseFloat((sum + calcTax).toFixed(2))
         expect(actualTotal).toEqual(expectedTotal)
     }) 
 })
