@@ -23,8 +23,12 @@ test.beforeAll(async({browser}) => {
 
 test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
 
-    test.beforeAll (async() => {
+    test.beforeEach (async() => {
         productListing = await searchBox.searchByButton(searchText)
+    })
+
+    test.afterEach(async() => {
+        await base.gotoHome()
     })
 
     test('Verify user can move between product listing pages when more than one pages are available CFS-311', async () => {
@@ -76,6 +80,7 @@ test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
         const cart = await productListing.addItemToCart(data.products.basic)
         const items = await cart?.getItemNames()
         expect(items).toContain(data.products.basic)
+        await cart?.close()
     })
 
     test('Verify clicking an item on product listing page opens correct product detail page CFS-314', async()=>{

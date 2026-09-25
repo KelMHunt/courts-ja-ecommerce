@@ -46,22 +46,22 @@ export class BasePage
 
     async gotoHome(): Promise<HomePage>{
         await this.logo.click()
-        await this.page.waitForTimeout(2000)
         const homePage = new HomePage(this.page)
+        await homePage.brandsHeadline.waitFor({state:'visible'})
         return homePage
     }
 
     async gotoAccount(): Promise<AccountPage>{
         await this.userBtn.click()
-        await this.page.waitForTimeout(2000)
         const acctPage = new AccountPage(this.page)
+        //add waitFor statement
         return acctPage
     }
 
     async openCart(): Promise<Cart>{
         await this.cartBtn.click()
-        await this.page.waitForTimeout(2000)
         const cart = new Cart(this.page)
+        await cart.tray.waitFor({state:'visible'})
         return cart
     }
 

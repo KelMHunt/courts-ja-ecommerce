@@ -16,6 +16,7 @@ export class ProductListing extends BasePage
     readonly pagination?: Locator
     readonly nextBtn: Locator
     readonly prevBtn: Locator
+    readonly loadSpinner: Locator
     readonly filterMenu: FilterMenu
     readonly sortMenu: SortMenu
 
@@ -30,6 +31,7 @@ export class ProductListing extends BasePage
         this.pagination = this.listingPage.locator(".pages li")
         this.nextBtn = this.listingPage.locator(".action.next")
         this.prevBtn = this.listingPage.locator(".action.previous")
+        this.loadSpinner = this.listingPage.locator("[data-role='loader']", {has: this.listingPage.locator("img")})
         this.filterMenu = this.listingPage.locator("")
         this.sortMenu = this.listingPage.locator("")
     }
@@ -171,7 +173,6 @@ export class ProductListing extends BasePage
                 const cart = await this.addItemToCart(item)
                 await cart?.tray.waitFor({ state: 'visible' })
                 await cart?.close()
-
             }
         } else {
             console.log("No items were given to add to cart")
@@ -184,14 +185,15 @@ export class ProductListing extends BasePage
 
     async movetoNextPage():Promise<void>{
         await this.nextBtn.click()
-        await this.listingPage.waitForTimeout(3000)
-
+        await this.loadSpinner.waitFor({state: 'hidden'})
+        // await this.listingPage.waitForTimeout(3000)
     }
 
     async gotoPageNumber(pageNum:string):Promise<void>{
         const targetPage = this.listingPage.locator(".pages li", {hasText: pageNum})
         await targetPage.click()
-        await this.listingPage.waitForTimeout(2000)
+        await this.loadSpinner.waitFor({state:'hidden'})
+        // await this.listingPage.waitForTimeout(2000)
     }
 
     async getCurrentPageNumber():Promise<string>{
@@ -231,29 +233,30 @@ export class ProductListing extends BasePage
     async applyAscendingPriceSort(): Promise<void>{
 
         await this.sortBtn.click()
-        await this.listingPage.waitForTimeout(2000)
         const ascendingPriceOption = this.listingPage.locator("[data-section='product_price_asc']")
+        await ascendingPriceOption.waitFor({state:'visible'})
         await ascendingPriceOption.click()
-        await this.listingPage.waitForTimeout(2000)
+        await this.loadSpinner.waitFor({state:'hidden'})
     }
 
     async applyDescendingPriceSort():Promise<void>{
         
         await this.sortBtn.click()
-        await this.listingPage.waitForTimeout(2000)
         const descendingPriceOption = this.listingPage.locator("[data-section='product_price_desc']")
+        await descendingPriceOption.waitFor({state:'visible'})
         await descendingPriceOption.click()
-        await this.listingPage.waitForTimeout(2000)
+        await this.loadSpinner.waitFor({state:'hidden'})
     }
 
     async applyFilter(type:string, option:string):Promise<void>{
         
         await this.filterBtn.click()
-        await this.listingPage.waitForTimeout(2000)
         const filter = this.listingPage.locator(`.filter-options-title:has-text("${type}")`)
+        await filter.waitFor({state: 'visible'})
         await filter.click()
         const choice = this.listingPage.locator(".filter-options-item").getByLabel(option)
+        await choice.waitFor({state:'visible'})
         await choice.click()
-        await this.listingPage.waitForTimeout(2000)
+        await this.listingPage.locator(".filter-current").waitFor({state:'visible'})
     }
 }
