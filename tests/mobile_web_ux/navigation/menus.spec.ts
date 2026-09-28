@@ -6,11 +6,15 @@ import * as footerData from '../../../test_data/footerData'
 let page: Page
 let base: BasePage
 
-test.beforeAll(async({browser})=>{
+test.beforeEach(async({browser})=>{
     page = await browser.newPage()
     base = new BasePage(page)
     await page.goto("")
     await base.closePreferences()
+})
+
+test.afterEach(async()=> {
+    await page.close()
 })
 
 test.describe('Header Menu tests', {tag: "@regression"}, ()=> {
