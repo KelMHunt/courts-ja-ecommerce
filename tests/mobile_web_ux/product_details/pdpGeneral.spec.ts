@@ -13,13 +13,16 @@ let searchBox: SearchBox
 let base: BasePage
 let productPage: Product | null
 let cart: Cart | null
+const searchText = inputs.search.item2
 
+// global test setup
+// @test.beforeAll() - once for all tests, initialize page objects and go to product detail page
 
 test.beforeAll(async({browser}) => {
     page = await browser.newPage()
     searchBox = new SearchBox(page)
     base = new BasePage(page)
-    const searchText = inputs.search.item2
+    
 
     await page.goto("")
     await base.closePreferences()
@@ -66,10 +69,17 @@ test.describe('Product Detail Page General Tests', ()=> {
 })
 
 test.describe('Product Detail Page Cart Tests', {tag:"@regression"}, ()=> {
+    
+    //test setup
+    // @test.beforeEach() - add item to cart from product page and close the cart
+
     test.beforeEach(async()=> {
         cart = productPage ? await productPage.addToCart() : null
         await cart?.close()
     })
+
+    //test teardown
+    // @test.afterEach() - open cart from header, empty cart contents and close the cart for a fresh state
 
     test.afterEach(async()=> {
         await base.openCart()
@@ -78,27 +88,21 @@ test.describe('Product Detail Page Cart Tests', {tag:"@regression"}, ()=> {
     })
 
     test('Verify clicking add to cart button on product page adds item to cart CFS-328', async()=> {
-        // const cart = await productPage?.addToCart()
-        // await cart?.close()
-        const qty = await cart?.getCartQuantity()
-        expect(qty).toEqual(1)
+        const qty = await cart?.getCartBadge()
+        await expect(qty!).toHaveText("1")
     })
 
     test('Verify user can increase item quantity in cart from product page after adding item to cart CFS-329', async()=> {
-        // const cart = await productPage?.addToCart()
-        // await cart?.close()
         await productPage?.increaseQuantity(2)
         const qty = await cart?.getCartBadge()
-        await expect(qty!).toHaveText('3')
+        await expect(qty!).toHaveText("3")
     })
 
     test('Verify user can decrease item quantity in cart from product page after adding item to cart CFS-332', async()=> {
-        // const cart = await productPage?.addToCart()
-        // await cart?.close()
         await productPage?.increaseQuantity(1)
         await productPage?.decreaseQuantity(1)
         const qty = await cart?.getCartBadge()
-        await expect(qty!).toHaveText('1')
+        await expect(qty!).toHaveText("1")
     })
 
 })
