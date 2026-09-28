@@ -12,6 +12,8 @@ let searchBox: SearchBox
 let base: BasePage
 let productPage: Product | null
 
+// global test setup
+// @test.beforeAll() - once before all tests, initialize page objects and go to product detail page
 
 test.beforeAll(async({browser}) => {
     page = await browser.newPage()
