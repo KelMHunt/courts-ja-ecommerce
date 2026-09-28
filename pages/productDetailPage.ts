@@ -35,7 +35,7 @@ export class Product extends BasePage
         this.productTitle = this.productPage.locator("h1.page-title")
         this.productPrice = this.productPage.locator(".product-info-price .price")
         this.gallery = this.productPage.locator(".fs-gallery__dialog")
-        this.showGalleryBtn = this.productPage.locator("[aria-label*='Show all']")
+        this.showGalleryBtn = this.productPage.locator("[aria-label*='Show all']").first()
         this.ratingStars = this.productPage.locator(".rating-stars").first()
         this.ratingNumber = this.productPage.locator(".rating-number").first()
         this.reviewLink = this.productPage.locator(".reviews-count").first()
@@ -118,13 +118,13 @@ export class Product extends BasePage
 
     async openGallery():Promise<void>{
         await this.showGalleryBtn.click()
-        await this.productPage.waitForTimeout(2000)
+        await this.gallery.waitFor({state:'visible'})
     }
 
     async closeGallery():Promise<void>{
         const closeBtn = this.gallery.locator("[aria-label='Close']")
         await closeBtn.click()
-        await this.productPage.waitForTimeout(2000)
+        await this.productTitle.waitFor({state:'visible'})
     }
 
     async browseGallery():Promise<void> {
@@ -137,33 +137,50 @@ export class Product extends BasePage
         }
     }
 
-    async addToCart(qty?: number):Promise<Cart| null>{
+    async addToCart():Promise<Cart| null>{
         await this.addToCartBtn.click()
-        await this.productPage.waitForTimeout(2000)
         const cart = new Cart(this.productPage)
-        await cart.close()
-
-        const increaseBtn = this.productPage.locator("[aria-label='Increase quantity']")
-    
-        if(qty && qty>1){
-            await increaseBtn.click({clickCount:qty-1})
-            await increaseBtn.waitFor({state:'visible'})
-        }
-        await this.productPage.waitForTimeout(2000)
+        await cart.tray.waitFor({state:'visible'})
+     
         return cart
     }
     
+    async increaseQuantity(qty?: number): Promise<void> {
+        const increaseBtn = this.productPage.locator("[aria-label='Increase quantity']")
+    
+        if(qty && qty>1){
+            for(let i=1; i<=qty; i++){
+                await Promise.all([
+                    this.productPage.waitForResponse(response => response.url().includes('customer/section/load') && response.status() === 200),
+                    increaseBtn.click()
+                ])
+            }
+           
+        } else {
+            await Promise.all([
+                this.productPage.waitForResponse(response => response.url().includes('customer/section/load') && response.status()=== 200),
+                increaseBtn.click()
+            ])
+        }
+    }
+
     async decreaseQuantity(qty?:number):Promise<void>{
         const decreaseBtn = this.productPage.locator("[aria-label='Decrease quantity']")
     
         if(qty && qty>1){
-            await decreaseBtn.click({clickCount: qty})
-            await decreaseBtn.waitFor({state: 'visible'})
-            
+            for(let i=1; i<=qty; i++){
+                await Promise.all([
+                    this.productPage.waitForResponse(response => response.url().includes('customer/section/load') && response.status() === 200),
+                    decreaseBtn.click()
+                ])
+            }
+           
         } else {
-            await decreaseBtn.click()
+            await Promise.all([
+                this.productPage.waitForResponse(response => response.url().includes('customer/section/load') && response.status()=== 200),
+                decreaseBtn.click()
+            ])
         }
-        await this.productPage.waitForTimeout(2000)
     }
 
     async gotoReviews():Promise<void>{

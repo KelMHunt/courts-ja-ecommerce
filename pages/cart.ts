@@ -152,9 +152,8 @@ export class Cart
         return qtys
     }
 
-    async getCartBadge(): Promise<number>{
-        const qty = await this.badge.innerText()
-        return parseInt(qty)
+    async getCartBadge(): Promise<Locator>{
+        return this.badge
     }
 
     async getCartQuantity():Promise<number>{
@@ -229,6 +228,7 @@ export class Cart
 
         for(const item of allItems){
             const deleteBtn = item.locator(".fa-xmark")
+            await deleteBtn.waitFor({state:'visible'})
             await deleteBtn.click()
             await confirmBtn.waitFor({state:'visible'})
             await confirmBtn.click()
