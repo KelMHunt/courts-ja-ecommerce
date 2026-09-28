@@ -5,12 +5,14 @@ import type { Page } from '@playwright/test'
 import * as data from '../../../test_data/labels'
 import * as inputs from '../../../test_data/inputs'
 import type { Product } from '../../../pages/productDetailPage'
+import type { Cart } from '../../../pages/cart'
 
 
 let page: Page
 let searchBox: SearchBox
 let base: BasePage
 let productPage: Product | null
+let cart: Cart | null
 
 
 test.beforeAll(async({browser}) => {
@@ -25,7 +27,7 @@ test.beforeAll(async({browser}) => {
     productPage = await productListing.gotoProductDetailPage(data.products.discounted)
 })
 
-test.describe('General Product Detail Page Tests', ()=> {
+test.describe('Product Detail Page General Tests', ()=> {
 
     test('Verify product page displays correct product info CFS-320', async() => {
         const image = await productPage?.getProductImage()
@@ -60,25 +62,44 @@ test.describe('General Product Detail Page Tests', ()=> {
         expect(specsContent).toContain(data.productDetails.specs)
     })
 
+   
+})
+
+test.describe('Product Detail Page Cart Tests', {tag:"@regression"}, ()=> {
+    test.beforeEach(async()=> {
+        cart = productPage ? await productPage.addToCart() : null
+        await cart?.close()
+    })
+
+    test.afterEach(async()=> {
+        await base.openCart()
+        await cart?.removeAllItems()
+        await cart?.close()
+    })
+
     test('Verify clicking add to cart button on product page adds item to cart CFS-328', async()=> {
-        const cart = await productPage?.addToCart()
-        const qty = await cart?.getCartBadge()
+        // const cart = await productPage?.addToCart()
+        // await cart?.close()
+        const qty = await cart?.getCartQuantity()
         expect(qty).toEqual(1)
     })
 
     test('Verify user can increase item quantity in cart from product page after adding item to cart CFS-329', async()=> {
-        const cart = await productPage?.addToCart(2)
+        // const cart = await productPage?.addToCart()
+        // await cart?.close()
+        await productPage?.increaseQuantity(2)
         const qty = await cart?.getCartBadge()
-        expect(qty).toEqual(2)
+        await expect(qty!).toHaveText('3')
     })
 
     test('Verify user can decrease item quantity in cart from product page after adding item to cart CFS-332', async()=> {
-        const cart = await productPage?.addToCart(3)
-        await productPage?.decreaseQuantity(2)
-        await page.waitForTimeout(5000)
-        await base.openCart()
-        const qty = await cart?.getCartQuantity()
-        expect(qty).toEqual(1)
+        // const cart = await productPage?.addToCart()
+        // await cart?.close()
+        await productPage?.increaseQuantity(1)
+        await productPage?.decreaseQuantity(1)
+        const qty = await cart?.getCartBadge()
+        await expect(qty!).toHaveText('1')
     })
-})
 
+})
+    

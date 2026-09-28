@@ -10,13 +10,13 @@ let page: Page
 let searchBox: SearchBox
 let base: BasePage
 let productPage: Product | null
+const searchText = inputs.search.item2
 
 test.beforeAll(async({browser})=> {
     page = await browser.newPage()
     base = new BasePage(page)
     searchBox = new SearchBox(page)
-    const searchText = inputs.search.item2
-
+    
     await page.goto("")
     await base.closePreferences()
     const productListing = await searchBox.searchByButton(searchText)
@@ -25,19 +25,26 @@ test.beforeAll(async({browser})=> {
 
 test.describe('Product Detail Gallery Tests', {tag:"@regression"}, ()=> {
 
-    test('Verify user can open image gallery CFS-318', async()=> {
+    test.beforeEach(async()=> {
         await productPage?.openGallery()
+    })
+
+    test.afterEach(async()=> {
+        if(await productPage?.gallery.isVisible()){
+            await productPage?.closeGallery()
+        }
+    })
+
+    test('Verify user can open image gallery CFS-318', async()=> {
         const galleryTitle = await productPage?.getGalleryTitle()
         expect(galleryTitle?.toLowerCase()).toBe(data.products.discounted.toLowerCase())
     })
 
     test('Verify user can browse image gallery of product CFS-316', async()=> {
-        await productPage?.openGallery()
         await productPage?.browseGallery()
     })
 
     test('Verify user can close image gallery CFS-319', async()=> {
-        await productPage?.openGallery()
         await productPage?.closeGallery()
         if(productPage) await expect(productPage.gallery).toBeHidden()
     })
