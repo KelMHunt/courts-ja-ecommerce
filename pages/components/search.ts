@@ -23,12 +23,13 @@ export class SearchBox
 
     //methods
     async fillSearchInput(searchText:string): Promise<void>{
+        await this.searchInput.click()
         await this.searchInput.fill(searchText)
-        await this.page.waitForTimeout(3000)
+        await this.searchSuggestions.waitFor({state:'visible'})
+        
     }
 
     async getSearchSuggestions(searchText:string): Promise<string[]>{
-        
         await this.fillSearchInput(searchText)
         
         const isSearchSuggestionsVisible = await this.searchSuggestions.isVisible()
@@ -55,29 +56,25 @@ export class SearchBox
     }
 
     async searchBySuggestion(searchText:string): Promise<ProductListing | null>{
-        
-        await this.searchInput.fill(searchText)
-        await this.page.waitForTimeout(3000)
+        await this.fillSearchInput(searchText)
         const isVisible = await this.searchSuggestions.isVisible()
 
         if(isVisible){
             await this.searchSuggestions.locator("li").first().click()
-            await this.page.waitForTimeout(3000)
             const productListing = new ProductListing(this.page)
+            await productListing.resultTitle.waitFor({state:'visible'})
             return productListing
         }
-
         return null
     }
 
     async searchByButton(searchText:string): Promise<ProductListing>{
-       
-        await this.searchInput.fill(searchText)
+        await this.fillSearchInput(searchText)
         await this.searchBtn.click()
-        await this.page.waitForTimeout(3000)
 
         const productListing = new ProductListing(this.page)
-        
+        await productListing.resultTitle.waitFor({state: 'visible'})
+
         return productListing
     }
 
@@ -89,18 +86,20 @@ export class SearchBox
             const title2 = await items[i+1]?.locator(this.productResults.title!).innerText()
             
             // debug
-            console.log(title1, title2)
+            // console.log(title1, title2)
 
             if(title1?.toLowerCase().includes(name.toLowerCase())){
                 await items[i]?.locator(this.productResults.image!).click()
-                await this.page.waitForTimeout(3000)
                 const productPage = new Product(this.page)
+                await productPage.productTitle.waitFor({state:'visible'})
+                
                 return productPage
 
             } else if (title2?.toLowerCase().includes(name.toLowerCase())){
                 await items[i+1]?.locator(this.productResults.image!).click()
-                await this.page.waitForTimeout(3000)
                 const productPage = new Product(this.page)
+                await productPage.productTitle.waitFor({state:'visible'})
+                
                 return productPage
             }
             
@@ -121,7 +120,8 @@ export class SearchBox
         }
 
         await this.searchInput.clear()
-        await this.page.waitForTimeout(2000)
+        await this.searchSuggestions.waitFor({state:'hidden'})
+        
         return true
     }
 }

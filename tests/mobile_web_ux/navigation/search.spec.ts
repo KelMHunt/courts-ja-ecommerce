@@ -9,13 +9,17 @@ let page: Page
 let base: BasePage
 let searchBox: SearchBox
 
-test.beforeAll(async({browser})=> {
+test.beforeEach(async({browser})=> {
     page = await browser.newPage()
     searchBox = new SearchBox(page)
     base = new BasePage(page)
 
     await page.goto("")
     await base.closePreferences()
+})
+
+test.afterEach(async()=> {
+    await page.close()
 })
 
 test.describe('Search Tests', {tag:"@regression"}, ()=> {
@@ -87,8 +91,8 @@ test.describe('Search Tests', {tag:"@regression"}, ()=> {
         const searchText = inputs.search.item
         const productListing = await searchBox.searchBySuggestion(searchText)
         if(productListing){
-            expect(productListing.resultTitle).toContainText(searchText)
-        } else console.log("Product listing variable is undefined")
+            await expect(productListing.resultTitle).toContainText(searchText)
+        } else console.log("No product listing was returned")
     })
 
     test('Verify user can go to product listing page by clicking search button CFS-306', async()=> {
