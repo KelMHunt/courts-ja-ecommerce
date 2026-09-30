@@ -5,14 +5,14 @@ import * as footerData from '../../../test_data/footerData'
 let page: Page
 let base: BasePage
 
-test.beforeEach(async({browser})=>{
-    page = await browser.newPage()
+test.beforeEach(async({page})=>{
+    // page = await browser.newPage()
     base = new BasePage(page)
     await page.goto("")
     await base.closePreferences()
 })
 
-test.afterEach(async()=> {
+test.afterEach(async({page})=> {
     await page.close()
 })
 
@@ -31,7 +31,7 @@ test.describe('Footer Tests', {tag: "@regression"}, ()=> {
         expect(result).toBeTruthy()
     })
 
-    test('Verify correct url when different location is selected CFS-300', async () => {
+    test('Verify correct url when different location is selected CFS-300', async ({page}) => {
         const choice = footerData.locations[2]!
         const result = await base.footer.selectCountry(choice)
         expect(result).toBeTruthy()

@@ -89,7 +89,7 @@ test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
     })
 
     
-    test('Verify cart item is preserved when user closes cart and returns CFS-342', async()=> {
+    test('Verify cart item is preserved when user closes cart and returns CFS-342', async({page})=> {
         const itemsBefore = await cart?.getItemNames()
         await cart?.close()
         await page.waitForTimeout(5000) //simulating time away from cart
@@ -98,7 +98,7 @@ test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
         expect(itemsAfter).toEqual(itemsBefore)
     })
 
-    test('Verify cart items are preserved when user goes back to previous page after adding item to cart CFS-343', async()=> {
+    test('Verify cart items are preserved when user goes back to previous page after adding item to cart CFS-343', async({page})=> {
         await cart?.item.first().waitFor({state:'visible'})
         const qtyBefore = await cart?.getCartQuantity()
         await cart?.close()

@@ -9,8 +9,8 @@ let page: Page
 let base: BasePage
 let searchBox: SearchBox
 
-test.beforeEach(async({browser})=> {
-    page = await browser.newPage()
+test.beforeEach(async({page})=> {
+    // page = await browser.newPage()
     searchBox = new SearchBox(page)
     base = new BasePage(page)
 
@@ -18,7 +18,7 @@ test.beforeEach(async({browser})=> {
     await base.closePreferences()
 })
 
-test.afterEach(async()=> {
+test.afterEach(async({page})=> {
     await page.close()
 })
 

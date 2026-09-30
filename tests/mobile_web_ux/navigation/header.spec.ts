@@ -5,15 +5,15 @@ import * as labels from '../../../test_data/labels'
 let page: Page
 let base: BasePage
 
-test.beforeEach(async({browser})=> {
-    page = await browser.newPage()
+test.beforeEach(async({page})=> {
+    // page = await browser.newPage()
     base = new BasePage(page)
 
     await page.goto("")
     await base.closePreferences()
 })
 
-test.afterEach(async()=> {
+test.afterEach(async({page})=> {
     await page.close()
 })
 
