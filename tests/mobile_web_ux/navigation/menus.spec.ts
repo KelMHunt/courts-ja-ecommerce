@@ -20,24 +20,24 @@ test.afterEach(async()=> {
 test.describe('Header Menu tests', {tag: "@regression"}, ()=> {
 
     test.fail('Verify clicking each main menu option routes user to correct page CFS-219', async() => {
-    await base.mainMenu.openMainMenu()
-    const result = await base.mainMenu.confirmMainMenuOptions()
-    result.forEach(val => expect(val).toBeTruthy())
+    const mainMenu = await base.openMainMenu()
+    const result = await mainMenu.confirmMainMenuOptions()
+    expect(result).toBeTruthy()
     }) //expected to fail due to test data
 
     test('Verify departments menu displays expected departments CFS-218', async()=> {
 
-        await base.mainMenu.openMainMenu()
-        const deptMenu = await base.mainMenu.openDeptsMenu()
+        const mainMenu = await base.openMainMenu()
+        const deptMenu = await mainMenu.openDeptsMenu()
         const result = await deptMenu.confirmDepts()
-        result.forEach(val => expect(val).toBeTruthy())
+        expect(result).toBeTruthy()
     })
 
-    test.fail('Verify clicking each departments menu item displays dropdown of product categories list CFS-216', async()=> {
-        await base.mainMenu.openMainMenu()
-        const deptMenu = await base.mainMenu.openDeptsMenu()
+    test.fixme('Verify clicking each departments menu item displays dropdown of product categories list CFS-216', async()=> {
+        const mainMenu = await base.openMainMenu()
+        const deptMenu = await mainMenu.openDeptsMenu()
         const result = await deptMenu.confirmDeptsCategories()
-        result.forEach(val => expect(val).toBeTruthy())
+        expect(result).toBeTruthy()
     }) // expected to fail due to lack of unique element selectors in dom
     
 
@@ -48,7 +48,7 @@ test.describe('Footer Menu tests', {tag: "@regression"}, ()=> {
     
     test('Verify clicking a footer link category displays dropdown of footer links CFS-291', async()=> {
         const result = await base.footerMenu.confirmFooterMenuOptions()
-        result.forEach(val => expect(val).toBeTruthy())
+        expect(result).toBeTruthy()
     })
 
     

@@ -34,8 +34,8 @@ test.describe('Header Tests', {tag: "@regression"}, ()=> {
     })
 
     test('Verify clicking side menu button icon opens side menu CFS-209', async()=> {
-        const isOpen = await base.mainMenu.openMainMenu()
-        expect(isOpen).toBeTruthy()
+        const mainMenu = await base.openMainMenu()
+        await expect(mainMenu.menuTray).toBeVisible()
     })
 
 
