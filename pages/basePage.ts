@@ -57,14 +57,13 @@ export class BasePage
         await this.menuIcon.click()
         const mainMenu = new MainMenu(this.page)
         await mainMenu.menuTray.waitFor({state:'visible'})
-        // const isMenuOpen = await this.menuTray.isVisible()
         return mainMenu
     }
 
     async gotoAccount(): Promise<AccountPage>{
         await this.userBtn.click()
         const acctPage = new AccountPage(this.page)
-        //add waitFor statement
+        await acctPage.loginHeading.waitFor({state:'visible'})
         return acctPage
     }
 
