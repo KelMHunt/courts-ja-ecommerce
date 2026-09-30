@@ -6,9 +6,8 @@ export class MainMenu
 {
     //variables (elements)
     private readonly page
-    private readonly menuIcon: Locator
     private readonly logoClose: Locator
-    private readonly menuTray: Locator
+    readonly menuTray: Locator
     private readonly menuOptions: Locator
     private readonly deptsLink: Locator
     private readonly orderHistoryLink: Locator
@@ -29,7 +28,6 @@ export class MainMenu
     //constructor
     constructor(page: Page){
         this.page = page
-        this.menuIcon = this.page.locator(".side-menu__mobile")
         this.logoClose = this.page.locator(".close").first()
         this.menuTray = this.page.locator(".navigation").last()
         this.deptsLink = this.page.getByRole("link", {name: /Departments/})
@@ -51,16 +49,9 @@ export class MainMenu
 
     //methods
 
-    async openMainMenu():Promise<boolean>{
-        await this.menuIcon.click()
-        const isMenuOpen = await this.menuTray.isVisible()
-        return isMenuOpen
-    }
-
-    async closeMainMenu():Promise<boolean>{
+    async closeMainMenu():Promise<void>{
         await this.logoClose.click()
-        const isMenuClosed = await this.menuTray.isHidden()
-        return isMenuClosed
+        await this.menuTray.waitFor({state:'hidden'})
     }
 
     async openDeptsMenu():Promise<DepartmentsMenu>{
@@ -69,7 +60,7 @@ export class MainMenu
         return deptMenu
     }
 
-    async confirmMainMenuOptions(): Promise<boolean[]>{
+    async confirmMainMenuOptions(): Promise<boolean>{
         const options = await this.menuOptions.all()
         let pattern: boolean[] = []
 
@@ -92,7 +83,7 @@ export class MainMenu
             }
         }
 
-        return pattern
+        return pattern.every(result => result===true)
 
         // debug
         // console.log(text, link)

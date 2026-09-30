@@ -13,6 +13,7 @@ export class BasePage
     private readonly page: Page
 
     //header
+    readonly menuIcon: Locator
     readonly mainMenu: MainMenu
     readonly deptMenu: DepartmentsMenu
     private readonly logo: Locator
@@ -31,6 +32,7 @@ export class BasePage
         this.mainMenu = new MainMenu(this.page)
         this.deptMenu = new DepartmentsMenu(this.page)
         this.footerMenu = new FooterMenu(this.page)
+        this.menuIcon = this.page.locator(".side-menu__mobile")
         this.footer = new Footer(this.page)
         this.popUpClose = this.page.locator(".onetrust-close-btn-handler")
         this.logo = this.page.locator(".header__logo")
@@ -49,6 +51,14 @@ export class BasePage
         const homePage = new HomePage(this.page)
         await homePage.brandsHeadline.waitFor({state:'visible'})
         return homePage
+    }
+
+    async openMainMenu():Promise<MainMenu>{
+        await this.menuIcon.click()
+        const mainMenu = new MainMenu(this.page)
+        await mainMenu.menuTray.waitFor({state:'visible'})
+        // const isMenuOpen = await this.menuTray.isVisible()
+        return mainMenu
     }
 
     async gotoAccount(): Promise<AccountPage>{
