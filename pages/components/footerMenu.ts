@@ -61,10 +61,9 @@ export class FooterMenu
         return check
     }
 
-    async confirmFooterMenuOptions():Promise<boolean[]>{
+    async confirmFooterMenuOptions():Promise<boolean>{
         const options = await this.menuOptions.all()
         let pattern: boolean [] = []
-        let result: boolean
 
         for(const option of options){
             const title = await option.innerText()
@@ -116,7 +115,7 @@ export class FooterMenu
         //debug
         // console.log(pattern)
 
-        return pattern
+        return pattern.every(result => result ===true)
     }
 
     
