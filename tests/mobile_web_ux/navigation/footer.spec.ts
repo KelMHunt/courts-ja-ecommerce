@@ -5,11 +5,15 @@ import * as footerData from '../../../test_data/footerData'
 let page: Page
 let base: BasePage
 
-test.beforeAll(async({browser})=>{
+test.beforeEach(async({browser})=>{
     page = await browser.newPage()
     base = new BasePage(page)
     await page.goto("")
     await base.closePreferences()
+})
+
+test.afterEach(async()=> {
+    await page.close()
 })
 
 test.describe('Footer Tests', {tag: "@regression"}, ()=> {
@@ -24,7 +28,7 @@ test.describe('Footer Tests', {tag: "@regression"}, ()=> {
 
     test('Verify clicking location button opens dropdown modal of expected countries CFS-298', async () => {
         const result = await base.footer.confirmCountriesList()
-        result.forEach(val => expect(val).toBeTruthy())
+        expect(result).toBeTruthy()
     })
 
     test('Verify correct url when different location is selected CFS-300', async () => {
@@ -36,8 +40,8 @@ test.describe('Footer Tests', {tag: "@regression"}, ()=> {
 
     test.fail('Verify clicking currency button opens dropdown modal of expected currencies CFS-299', async () => {
         const result = await base.footer.confirmCurrenciesList()
-        result.forEach(val => expect(val).toBeTruthy())
-    })
+        expect(result).toBeTruthy()
+    })//expected to fail
 
     test.fail('Verify correct currency is displayed on home page when user selects different currency CFS-303', async () => {
         const currency = footerData.currencies[1]!
@@ -49,11 +53,11 @@ test.describe('Footer Tests', {tag: "@regression"}, ()=> {
     test('Verify clicking each footer social link opens the correct company social media page CFS-301', async() => {
         
         const result = await base.footer.confirmSocials()
-        result.forEach(val => expect(val).toBeTruthy())
+        expect(result).toBeTruthy()
     })
 
     //Preferred implementation to test social function --needs work
-    test.fixme('Verify clicking each footer social link opens the correct company social media page CFS-301', async({browser})=> {
+    test.fixme('Verify clicking each footer social link opens the correct company social media page2 CFS-301', async({browser})=> {
         const context = await browser.newContext()
         const buttons = await base.footer.socialLinks.all()
         let results: boolean[] = []

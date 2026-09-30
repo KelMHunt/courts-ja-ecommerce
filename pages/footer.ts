@@ -34,7 +34,7 @@ export class Footer
 
     //methods
 
-    async confirmCountriesList(): Promise<boolean[]>{
+    async confirmCountriesList(): Promise<boolean>{
         await this.locationBtn.click()
 
         const options = await this.locationBtn.locator("li").all()
@@ -52,7 +52,7 @@ export class Footer
         }
         // console.log(pattern)
         
-        return pattern
+        return pattern.every(result => result ===true)
     }
 
     async selectCountry(name:string): Promise<boolean>{
@@ -74,7 +74,7 @@ export class Footer
         return isFound
     }
 
-    async confirmCurrenciesList(): Promise<boolean[]>{
+    async confirmCurrenciesList(): Promise<boolean>{
         const options = await this.currencyBtn.locator("li").all()
         let pattern: boolean[] = []
 
@@ -93,9 +93,9 @@ export class Footer
             pattern.push(false)
         }
         // debug
-        console.log(options,pattern)
+        // console.log(options,pattern)
         
-        return pattern
+        return pattern.every(result => result===true)
 
     }
 
@@ -153,7 +153,7 @@ export class Footer
         return icons
    }
 
-    async confirmSocials(): Promise<boolean[]>{
+    async confirmSocials(): Promise<boolean>{
         
         const links = await this.getSocialLinks()
         const icons = await this.getSocialIcons()
@@ -176,8 +176,8 @@ export class Footer
                 pattern.push (false)
             }
         }
-        console.log(pattern)
-        return pattern
+        // console.log(pattern)
+        return pattern.every(result => result===true)
    }
 
    /* Social functions not in use yet */
