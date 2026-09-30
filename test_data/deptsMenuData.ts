@@ -3,7 +3,7 @@ export const departments =
     "TV & Video", "Phones", "Furniture",
     "Home Appliances", "Small Appliances", "Automotive",
     "Sports & Outdoors", "Hardware", "Home",
-    "Health & Beauty", "Technology", "Gift Card"
+    "Health & Beauty", "Technology", "Gift Card", "CLEARANCE ITEMS"
 ]
 
 export const TV =
@@ -165,5 +165,11 @@ export const technology =
 export const giftCard =
 {
     name: "Gift Card",
+    categories: []
+}
+
+export const clearance =
+{
+    name: 'CLEARANCE ITEMS',
     categories: []
 }

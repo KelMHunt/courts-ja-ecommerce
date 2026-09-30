@@ -6,8 +6,8 @@ export class DepartmentsMenu
 {
     //variables
     private readonly page: Page
-    private readonly backBtn: Locator
-    private readonly menuItem: Locator
+    readonly backBtn: Locator
+    readonly menuItem: Locator
 
     //constructor
     constructor(page:Page){
@@ -16,23 +16,18 @@ export class DepartmentsMenu
         this.menuItem = this.page.locator("li [role='menuitem']")
         
     }
+
     //methods
+    async confirmDepts(): Promise<boolean>{
+        //@actualDepts - based on the DOM, store the department texts from the 13th element onward
+        const actualDepts = (await this.menuItem.allInnerTexts()).slice(13)
+        const expectedDepts = data.departments
 
-    async confirmDepts(): Promise<boolean[]>{
-        const allItems = (await this.menuItem.all()).slice(12)//take second set of duplicated elements
-        let pattern: boolean[] = []
-
-        for(let i in allItems){
-            const text = await allItems[i]?.innerText()
-            
-            if(text===data.departments[i]){
-                pattern.push(true)
-            } else {
-                pattern.push(false)
-            }
+        if(helper.isEqual(actualDepts, expectedDepts)){
+            return true
+        } else {
+            return false
         }
-        // console.log(pattern)
-        return pattern
     }
 
     private async getSubMenuContents(item: Locator):Promise<string[]>{
@@ -42,12 +37,13 @@ export class DepartmentsMenu
         return contents
     }
 
-    async confirmDeptsCategories(): Promise<boolean[]>{
-        const allItems = (await this.menuItem.all()).slice(12)
+    async confirmDeptsCategories(): Promise<boolean>{
+        const allItems = (await this.menuItem.all()).slice(13)
         let pattern: boolean[] = []
         
         for(const item of allItems){
             const dept = await item.innerText()
+            await item.scrollIntoViewIfNeeded()
             await item.click()
             const contents = await this.getSubMenuContents(item)
             
@@ -100,11 +96,16 @@ export class DepartmentsMenu
                     pattern.push(helper.isEqual(contents, data.giftCard.categories))
                     break
 
+                case data.clearance.name:
+                    pattern.push(helper.isEqual(contents, data.clearance.categories))
+
                 default:
                     pattern.push(false)
             }
         }
         // console.log(pattern)
-        return pattern
+        return pattern.every(result => result === true)
     }
+
+    
 }
