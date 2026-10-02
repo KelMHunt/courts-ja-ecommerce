@@ -1,14 +1,17 @@
-import {test, expect, type Page} from '@playwright/test'
+import {test, expect} from '@playwright/test'
 import { HomePage } from '../../../pages/homePage'
 import { BasePage } from '../../../pages/basePage'
 
 
-let page:Page
+
 let base
 let home: HomePage
 
-test.beforeAll(async({browser})=> {
-    page = await browser.newPage()
+/* test setup - home page tests
+ * @test.beforeEach() - generate a home page and close cookie preferences
+ */
+
+test.beforeEach(async({page})=> {
     base = new BasePage(page)
     home = new HomePage(page)
 
