@@ -1,22 +1,21 @@
 import {test, expect} from '@playwright/test'
 import { BasePage } from '../../../pages/basePage'
 import { SearchBox } from '../../../pages/components/search'
-import type { Page } from '@playwright/test'
 import * as data from '../../../test_data/labels'
 import * as inputs from '../../../test_data/inputs'
 import type { Product } from '../../../pages/productDetailPage'
 
 
-let page: Page
+
 let searchBox: SearchBox
 let base: BasePage
 let productPage: Product | null
 
-// global test setup
-// @test.beforeAll() - once before all tests, initialize page objects and go to product detail page
+/* test setup - product detail page warranty tests
+ * @test.beforeEach - generate a product detail page with warranty options
+ */
 
-test.beforeAll(async({browser}) => {
-    page = await browser.newPage()
+test.beforeEach(async({page}) => {
     searchBox = new SearchBox(page)
     base = new BasePage(page)
     const searchText = inputs.search.item2

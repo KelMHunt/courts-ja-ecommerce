@@ -1,25 +1,23 @@
 import {test, expect} from '@playwright/test'
 import { BasePage } from '../../../pages/basePage'
 import { SearchBox } from '../../../pages/components/search'
-import type { Page } from '@playwright/test'
 import * as data from '../../../test_data/labels'
 import * as inputs from '../../../test_data/inputs'
 import type { Product } from '../../../pages/productDetailPage'
 import type { Cart } from '../../../pages/cart'
 
 
-let page: Page
 let searchBox: SearchBox
 let base: BasePage
 let productPage: Product | null
 let cart: Cart | null
 const searchText = inputs.search.item2
 
-// global test setup
-// @test.beforeAll() - once for all tests, initialize page objects and go to product detail page
+/* test setup - product detail page general tests
+ * @test.beforeEach() - generate a product detail page
+ */
 
-test.beforeAll(async({browser}) => {
-    page = await browser.newPage()
+test.beforeEach(async({page}) => {
     searchBox = new SearchBox(page)
     base = new BasePage(page)
     
@@ -28,6 +26,14 @@ test.beforeAll(async({browser}) => {
     await base.closePreferences()
     const productListing = await searchBox.searchByButton(searchText)
     productPage = await productListing.gotoProductDetailPage(data.products.discounted)
+})
+
+/* test teardown - product detail page general tests
+* @test.afterEach() - close page
+*/
+
+test.afterEach(async({page}) => {
+    await page.close()
 })
 
 test.describe('Product Detail Page General Tests', ()=> {
@@ -75,15 +81,6 @@ test.describe('Product Detail Page Cart Tests', {tag:"@regression"}, ()=> {
 
     test.beforeEach(async()=> {
         cart = productPage ? await productPage.addToCart() : null
-        await cart?.close()
-    })
-
-    //test teardown
-    // @test.afterEach() - open cart from header, empty cart contents and close the cart for a fresh state
-
-    test.afterEach(async()=> {
-        await base.openCart()
-        await cart?.removeAllItems()
         await cart?.close()
     })
 

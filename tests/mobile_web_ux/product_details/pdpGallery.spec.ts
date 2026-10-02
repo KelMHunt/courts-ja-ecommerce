@@ -1,19 +1,21 @@
 import {test, expect} from '@playwright/test'
-import type {Page} from '@playwright/test'
 import { BasePage } from '../../../pages/basePage'
 import { SearchBox } from '../../../pages/components/search'
 import type { Product } from '../../../pages/productDetailPage'
 import * as data from '../../../test_data/labels'
 import * as inputs from '../../../test_data/inputs'
 
-let page: Page
+
 let searchBox: SearchBox
 let base: BasePage
 let productPage: Product | null
 const searchText = inputs.search.item2
 
-test.beforeAll(async({browser})=> {
-    page = await browser.newPage()
+/* test setup - product detail page gallery tests
+ * @test.beforeEach() - generate a product detail page and open gallery
+ */
+
+test.beforeEach(async({page})=> {
     base = new BasePage(page)
     searchBox = new SearchBox(page)
     
@@ -21,19 +23,18 @@ test.beforeAll(async({browser})=> {
     await base.closePreferences()
     const productListing = await searchBox.searchByButton(searchText)
     productPage = await productListing.gotoProductDetailPage(data.products.discounted)
+    await productPage?.openGallery()
+})
+
+/* test teardown - product detail page gallery tests
+ * @test.afterEach() - close page
+ */
+
+test.afterEach(async({page})=> {
+    await page.close()
 })
 
 test.describe('Product Detail Gallery Tests', {tag:"@regression"}, ()=> {
-
-    test.beforeEach(async()=> {
-        await productPage?.openGallery()
-    })
-
-    test.afterEach(async()=> {
-        if(await productPage?.gallery.isVisible()){
-            await productPage?.closeGallery()
-        }
-    })
 
     test('Verify user can open image gallery CFS-318', async()=> {
         const galleryTitle = await productPage?.getGalleryTitle()
