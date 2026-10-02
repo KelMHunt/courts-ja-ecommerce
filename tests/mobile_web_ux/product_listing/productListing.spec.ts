@@ -1,19 +1,21 @@
 import {test, expect} from '@playwright/test'
-import type {Page} from '@playwright/test'
 import { BasePage } from '../../../pages/basePage'
 import { SearchBox } from '../../../pages/components/search'
 import * as data from '../../../test_data/labels'
 import * as inputs from '../../../test_data/inputs'
 import type { ProductListing } from '../../../pages/productListingPage'
 
-let page:Page
+
 let base: BasePage
 let searchBox: SearchBox
 let productListing: ProductListing
 const searchText = inputs.search.item
 
-test.beforeAll(async({browser}) => {
-    page = await browser.newPage()
+/* test setup - global product listing page tests
+ * @test.beforeEach - intialise base and search input page objects and close cookie preferences
+ */
+
+test.beforeEach(async({page}) => {
     base = new BasePage(page)
     searchBox = new SearchBox(page)
 
@@ -21,14 +23,22 @@ test.beforeAll(async({browser}) => {
     await base.closePreferences()
 })
 
+/* test teardown - product listing page tests
+ * @test.afterEach - close page
+ */
+
+test.afterEach(async({page}) => {
+    await page.close()
+})
+
 test.describe('Product Listing Page Tests', {tag: "@regression"}, () => {
+
+    /* test setup 
+     * @test.beforeEach - generate a product listing page
+     */
 
     test.beforeEach (async() => {
         productListing = await searchBox.searchByButton(searchText)
-    })
-
-    test.afterEach(async() => {
-        await base.gotoHome()
     })
 
     test('Verify user can move between product listing pages when more than one pages are available CFS-311', async () => {
