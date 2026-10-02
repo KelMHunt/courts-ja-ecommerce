@@ -25,7 +25,8 @@ export class SearchBox
     async fillSearchInput(searchText:string): Promise<void>{
         await this.searchInput.click()
         await this.searchInput.fill(searchText)
-        await this.searchSuggestions.waitFor({state:'visible'})
+        await this.page.locator(".livesearch.popover-container").waitFor({state:'visible'})
+        // await this.searchSuggestions.waitFor({state:'visible'})
         
     }
 

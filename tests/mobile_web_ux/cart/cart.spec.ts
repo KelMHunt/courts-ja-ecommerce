@@ -1,5 +1,4 @@
 import {test, expect} from '@playwright/test'
-import type {Page} from '@playwright/test'
 import { BasePage } from '../../../pages/basePage'
 import { SearchBox } from '../../../pages/components/search'
 import { ProductListing } from '../../../pages/productListingPage'
@@ -9,51 +8,38 @@ import * as inputs from '../../../test_data/inputs'
 import * as helper from '../../../helpers/functions'
 
 
-let page: Page
 let base: BasePage
 let searchBox: SearchBox
 let productListing: ProductListing
 let cart: Cart | null
-const item = data.products.discounted2
-const items = data.products.bedding
 
-/* test setup - global at the test file level
-* @test.beforeAll() - once before all tests, create a new page and intialize the base page and search components, navigate to home page and close cookie preference popup
-*/
-
-test.beforeAll(async({browser}) => {
-    page = await browser.newPage()
-    base = new BasePage(page)
-    searchBox = new SearchBox(page)
-   
-
-    await page.goto("")
-    await base.closePreferences()
-})
 
 test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
-
+    const item = data.products.basic
     /* test setup - single item cart tests
-    * @test.beforeAll() - generate 1 product listing page once for all tests
-    * @test.beforeEach() - freshly add an item to cart from the product listing page
+    
+    * @test.beforeEach() - generate a product listing page and freshly add an item to cart from it
     */
 
-    test.beforeAll('Single Items Tests', async()=> {
-        const searchText = inputs.search.item3
-        productListing = await searchBox.searchByButton(searchText)
-    })
+    test.beforeEach(async({page})=> {
+        base = new BasePage(page)
+        searchBox = new SearchBox(page)
+        const searchText = inputs.search.item
 
-    test.beforeEach(async()=> {
+        await page.goto("")
+        await base.closePreferences()
+        productListing = await searchBox.searchByButton(searchText)
         cart = await productListing.addItemToCart(item)
     })
 
     /* test teardown - single item cart tests
-    * @test.afterEach() - remove all items from cart and close the cart
+    * @test.afterEach() - close the page after each test
     */
 
-    test.afterEach(async()=> {
-        await cart?.removeAllItems()
-        await cart?.close()
+    test.afterEach(async({page})=> {
+        // await cart?.removeAllItems()
+        // await cart?.close()
+        await page.close()
     })
 
     test('Verify item quantity can be increased from cart CFS-333', async()=> {
@@ -112,14 +98,19 @@ test.describe('Cart (Single Item) Tests', {tag:"@regression"}, async() => {
 })
 
 test.describe('Cart (Multiple Items) Tests', {tag:"@regression"}, ()=> {
-    
+    const items = data.products.bedding
+
     /* test setup - multiple item cart tests
-    * @test.beforeAll() - generate 1 product listing page and add multiple items from that page to the cart only once
+    * @test.beforeEach() - generate a product listing page and add multiple items from that page to the cart
     */
-    test.beforeAll('Multiple Items Test', async()=> {
-        const searchText = inputs.search.category
+    test.beforeEach('Multiple Items Test', async({page})=> {
+        base = new BasePage(page)
+        searchBox = new SearchBox(page)
         cart = new Cart(page)
-        
+        const searchText = inputs.search.category
+
+        await page.goto("")
+        await base.closePreferences()
         productListing = await searchBox.searchByButton(searchText)
         await productListing.addMultipleItemstoCart(items)
         await base.openCart()
