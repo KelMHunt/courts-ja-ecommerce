@@ -36,8 +36,18 @@
     * (iv) Run `npm init playwright@latest`
 
 4. **Test Instructions:**
+    **N.B.: Due to production level constraints (eg automation detection), the test suite is expected to fail**
+
     * Regression: `npm run test:regression`
     * Specific test: `npm run test {filename.spec.ts}`
     * Headed mode: add `--headed` to the test command in terminal to visually view test execution. *Note tests run headlessly by default.*
+
+5. **Review Instructions**
+
+    * Select the branch dropdown button (labelled 'main') to view the test automation deliverables that were shipped in each milestone of development (e.g `feature/milestone_one`, `feature/milestone_two`, etc)
+    * Select the *'pages'* folder to view the page object and component classes representing the relevant web pages and reusable components from the ecommerce site.
+    * Select the *'test_data'* folder to view interfaces and modules that were used for relevant tests.
+    * Select the *'helpers'* folder to view helper utilities/functions that were used to achieve test functionality.
+    * Select the *'tests'* folder to view mobile-first tests written for critical userflows of the ecommerce site.
 
 
